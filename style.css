@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+
+    background: url(rsc/bgRsc.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin-right: 20px;
+}
+
+.navbar ul li {
+    margin-left: 20px;
+}
+
+.navbar ul li {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.navbar a {
+    font-size: 20px;
+    color: #000000;
+    text-decoration: none;
+    font-weight: 800;
+    position: relative;
+    margin-left: 20px;
+}
+
+.navbar a::after {
+    content: "";
+    display: block;
+    height: 4px;
+    border-radius: 15px;
+    width: 100%;
+    background-color: #FF8A1E;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+    position: absolute;
+    bottom: -3px;
+    left: -5px;
+}
+
+.navbar a:hover::after {
+    transform: scaleX(1.2);
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: #FF8A1E
+}
+
+.site-logo h1 {
+    float: left;
+    color: #1A307F;
+    font-size: 24px;
+    font-family: 'Inter Black';
+    margin-left: 10px;
+    position: absolute;
+    top: 30px;
+    left: 130px;
+    font-size: 30px;
+}
+
+.logo {
+    width: 98px;
+    height: 70px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.block {
+    width: 700px;
+    padding: 10px;
+    display: block;
+    position: absolute;
+    top: 40vh;
+    right: 5vw;
+}
+
+.title {
+    color: #ffffff;
+    font-size: 35px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 8px;
+}
+
+.desc {
+    flex-shrink: 0;
+    color: #ffffff;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 50px;
+}
+
+.btn_book {
+    width: 200px;
+    height: 50px;
+    border-radius: 30px;
+    border-color: transparent;
+    font-size: 22px;
+    font-weight: bold;
+    background: #FCBB6D;
+}
+
+.btn_book:hover {
+    background: rgb(248, 202, 127);
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+}
+
+
+/* Login Page */
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    width: 420px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 30px 40px;
+}
+
+.login-wrapper h1 {
+    font-size: 36px;
+    font-family: 'Inter Black';
+    text-align: center;
+}
+
+.login-wrapper .input-box {
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    height: 100%;
+    width: 100%;
+    background-color: #d9d9d9;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    font-size: 16px;
+    color: #000000;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: #828282;
+}
+
+.login-wrapper .login-btn {
+    width: 100%;
+    height: 45px;
+    background: #FF8A1E;
+    border: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #000000;
+    font-weight: 600;
+}
+
+.login-wrapper .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0px 15px;
+
+}
+
+.register-link p a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link p a:hover {
+    text-decoration: underline;
+}
+
+
+/* Register Page */
+.register-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.register-wrapper {
+    width: 650px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 25px 30px;
+    display: flex;
+    gap: 3em;
+}
+
+.register-info h1 {
+    font-family: 'Inter Black';
+}
+
+.register-icon {
+    height: 70vh;
+}
+
+.register-wrapper .input-box {
+    width: 100%;
+    height: 30px;
+    margin: 30px 0;
+}
+
+.register-wrapper .input-box input {
+    height: 100%;
+    width: 100%;
+    background-color: #d9d9d9;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    font-size: 16px;
+    color: #000000;
+    padding: 20px 45px 20px 20px;
+}
+
+
+.register-btn {
+    font-family: 'Inter Black';
+    color: #000000;
+    text-decoration: none;
+    background-color: #FF8A1E;
+    border-radius: 15px;
+    padding: 10px 20px 10px 20px;
+    outline: none;
+    border: none;
+}
+
+/* Home Page */
+.home-container {
+    display: flex;
+    margin: 0 auto;
+    justify-content: space-between;
+    padding: 3em;
+}
+
+.home-desc h1 {
+    font-family: 'Inter Black';
+    font-size: 60px;
+    color: #ffffff;
+}
+
+.home-desc a {
+    font-family: 'Inter Black';
+    color: #000000;
+    text-decoration: none;
+    background-color: #FF8A1E;
+    border-radius: 10px;
+    padding: 10px 20px 10px 20px;
+}
+
+.home-icon table {
+    border-spacing: 30px;
+}
+
+.home-img1 {
+    height: 63vh;
+}
+
+.home-img2 {
+    height: 30vh;
+}
+
+.home-img3 {
+    height: 30vh;
+}
