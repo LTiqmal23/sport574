@@ -396,6 +396,7 @@ header {
 }
 
 /* Customer Edit Booking Detail */
+/* Customer Edit Booking Detail */
 #customer-edit .choose-sport {
     display: flex;
     flex-direction: column;
@@ -405,7 +406,7 @@ header {
     color: #000000;
 }
 
-#customer-edit .choose-sport .container {
+#customer-edit .container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 15px;
@@ -423,102 +424,87 @@ header {
     color: #ffffff;
     border-radius: 5px;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
 #customer-edit .back-button svg {
     width: 24px;
     height: 24px;
     fill: none;
-    stroke: #000000;
+    stroke: #ffffff;
     stroke-width: 2;
 }
 
 #customer-edit .back-button:hover {
-    background-color: #1A307F;
+    background-color: #16275e;
 }
 
-/* New styles for containers */
-#customer-edit .form-container,
-#customer-edit .add-ons-container {
-    margin-bottom: 20px; /* Add some spacing between containers */
-}
-
-#customer-edit .form-container .form-group,
-#customer-edit .add-ons-container .add-on-item {
-    margin-bottom: 10px; /* Add spacing between form elements and add-on items */
-}
-
-/* Styles for form elements */
-#customer-edit .form-container label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-#customer-edit .form-container input,
-#customer-edit .form-container select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-}
-
-#customer-edit .form-container select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path fill="none" stroke="%23000000" d="M1 1l4 3 4-3"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 8px top 50%;
-    background-size: 8px 5px;
-}
-
-/* Styles for add-ons */
-#customer-edit .add-ons-container .add-on-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#customer-edit .add-ons-container .add-on-item .quantity {
-    display: flex;
-    align-items: center;
-}
-
-#customer-edit .add-ons-container .add-on-item .quantity button {
-    padding: 3px 8px;
+#customer-edit .addons-container {
     background-color: #1A307F;
     color: #ffffff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
 }
 
-#customer-edit .add-ons-container .add-on-item .quantity .value {
-    margin: 0 10px;
+#customer-edit .addons-container table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-#customer-edit .add-ons-container .add-on-item .price {
+#customer-edit .addons-container th,
+#customer-edit .addons-container td {
+    padding: 8px;
+    text-align: left;
+}
+
+#customer-edit .addons-container th {
+    background-color: #0c1b4d;
+}
+
+#customer-edit .addons-container .header {
+    font-size: 18px;
     font-weight: bold;
 }
 
-#customer-edit .add-ons-container .add-on-item .quantity button:hover {
-    background-color: #154e8d;
+#customer-edit .addons-container .sub-header {
+    background-color: #16275e;
 }
 
-/* Flexbox styling for container-wrapper */
-#customer-edit .container-wrapper {
+#customer-edit .addons-container .sub-header th {
+    font-weight: normal;
+}
+
+#customer-edit .addons-container td {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#customer-edit .quantity-control {
     display: flex;
-    justify-content: space-between; /* Adjust spacing between containers */
-    align-items: flex-start; /* Align containers at the top */
-    margin-bottom: 20px; /* Add some spacing */
+    align-items: center;
+    justify-content: center;
 }
 
-/* Adjust width of containers for responsiveness */
-#customer-edit .form-container,
-#customer-edit .add-ons-container {
-    width: calc(50% - 10px); /* Adjust width based on desired spacing */
+#customer-edit .quantity-control button {
+    width: 25px;
+    height: 25px;
+    background-color: #1A307F;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-
+#customer-edit .quantity-control input[type="number"] {
+    width: 40px;
+    text-align: center;
+    margin: 0 5px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

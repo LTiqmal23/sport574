@@ -14,9 +14,7 @@
             <div class="site-logo">
                 <svg class="logo" width="80" height="80" viewBox="0 0 80 80" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M51.6563 15.75C51.6563 15.75 45.125 13.0625 36.6875 18.5938C27.7187 24.4687 29.6875 40.1562 34.625 43.8125C31.4375 37.4687 30.1563 25.4062 41.0313 27.5312C41.0313 27.5312 38.0938 60.7812 12.3125 76.8437C19.9688 77.625 37.4688 64.9063 46.125 50.4063C56.5625 53.7188 54.375 55.125 54.375 55.125L42.5625 74.0938C42.5625 74.0938 69.125 56.5 67.5313 52.3438C65.5625 46.875 51.9688 41.2187 51.9688 41.2187L55.5938 32.2187C55.5938 32.2187 59.9063 33.1562 61.8438 31.7812C66.5937 28.4062 66.125 26.0313 66.125 26.0313C66.125 26.0313 57.8125 30.5312 56.7812 21.9375C56.2187 17 51.6563 15.75 51.6563 15.75ZM59.7812 8.84375C59.7812 5.6875 57.2187 3.125 54.0312 3.125C50.8438 3.125 48.2812 5.6875 48.2812 8.84375C48.2812 12 50.8438 14.5625 54.0312 14.5625C57.2187 14.5312 59.7812 11.9687 59.7812 8.84375Z"
-                        fill="black" />
+                    <!-- Logo content -->
                 </svg>
                 <h1>SportFusion</h1>
             </div>
@@ -32,71 +30,89 @@
     <main id="customer-edit">
         <section class="choose-sport">
             <div class="container">
-                <a href="home.html" class="back-button">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </a>
-                <h2>Edit Details</h2>
+                <!-- Form Section Container -->
+                <div class="form-container">
+                    <a href="home.html" class="back-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <h2>Edit Details</h2>
+                    <form>
+                        <table>
+                            <tr>
+                                <td><label for="name">Name</label></td>
+                                <td><input type="text" id="name" name="name" value="Iqmal"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="phone">Phone No.</label></td>
+                                <td><input type="text" id="phone" name="phone" value="01856740283"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="court">Court/Table Number</label></td>
+                                <td>
+                                    <select id="court" name="court">
+                                        <option value="F3" selected>F3</option>
+                                        <option value="F2" selected>F2</option>
+                                        <option value="F1" selected>F1</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
 
-                <!-- Parent container for the two containers -->
-                <div class="container-wrapper">
-                    <!-- First Container for Form Elements -->
-                    <div class="form-container">
-                        <form>
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" value="Iqmal">
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone No.</label>
-                                <input type="tel" id="phone" value="01856740283">
-                            </div>
-                            <div class="form-group">
-                                <label for="court">Court/Table Number</label>
-                                <select id="court">
-                                    <option value="F3" selected>F3</option>
-                                    <option value="F2">F2</option>
-                                    <option value="F1">F1</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Second Container for Add-Ons -->
-                    <div class="add-ons-container">
-                        <div class="add-ons">
-                            <h3>Add-Ons</h3>
-                            <div class="add-on-item">
-                                <span>Isotonic Drink</span>
-                                <span class="price">2.50</span>
-                                <div class="quantity">
-                                    <button class="decrease">-</button>
-                                    <span class="value">2</span>
-                                    <button class="increase">+</button>
-                                </div>
-                            </div>
-                            <div class="add-on-item">
-                                <span>Socks</span>
-                                <span class="price">5.00</span>
-                                <div class="quantity">
-                                    <button class="decrease">-</button>
-                                    <span class="value">2</span>
-                                    <button class="increase">+</button>
-                                </div>
-                            </div>
-                            <div class="add-on-item">
-                                <span>Energy Bar</span>
-                                <span class="price">3.00</span>
-                                <div class="quantity">
-                                    <button class="decrease">-</button>
-                                    <span class="value">2</span>
-                                    <button class="increase">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Add-ons Section Container -->
+                <div class="addons-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="header">Add-Ons</th>
+                            </tr>
+                            <tr class="sub-header">
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Isotonic Drink</td>
+                                <td>2.50</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <button class="decrease">-</button>
+                                        <input type="number" value="2" min="0" max="10">
+                                        <button class="increase">+</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Socks</td>
+                                <td>5.00</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <button class="decrease">-</button>
+                                        <input type="number" value="2" min="0" max="10">
+                                        <button class="increase">+</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Energy Bar</td>
+                                <td>3.00</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <button class="decrease">-</button>
+                                        <input type="number" value="2" min="0" max="10">
+                                        <button class="increase">+</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Proceed Button -->
@@ -107,4 +123,3 @@
 </body>
 
 </html>
-
