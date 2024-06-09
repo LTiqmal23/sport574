@@ -312,3 +312,46 @@ header {
 .home-img3 {
     height: 30vh;
 }
+
+/*Customer Booking*/
+.choose-sport {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #000000;
+}
+
+.choose-sport h2 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.sports-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.sport {
+    background-color: #FF8A1E;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 150px;
+    height: 150px;
+}
+
+.sport img {
+    width: 80px;
+    height: 80px;
+}
+
+.sport p {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000;
+}
