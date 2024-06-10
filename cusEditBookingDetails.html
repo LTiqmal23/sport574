@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Edit Booking Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="site-logo">
+                <svg class="logo" width="80" height="80" viewBox="0 0 80 80" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <!-- Logo content -->
+                </svg>
+                <h1>SportFusion</h1>
+            </div>
+
+            <ul class="nav_links">
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active" href="#">Book</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="customer-edit">
+        <section class="choose-sport">
+            <div class="container">
+                <!-- Form Section Container -->
+                <div class="form-container">
+                    <a href="home.html" class="back-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <h2>Edit Details</h2>
+                    <form>
+                        <table>
+                            <tr>
+                                <td><label for="name">Name</label></td>
+                                <td><input type="text" id="name" name="name" value="Iqmal"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="phone">Phone No.</label></td>
+                                <td><input type="text" id="phone" name="phone" value="01856740283"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="court">Court/Table Number</label></td>
+                                <td>
+                                    <select id="court" name="court">
+                                        <option value="F3" selected>F3</option>
+                                        <option value="F2" selected>F2</option>
+                                        <option value="F1" selected>F1</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+
+                <!-- Add-ons Section Container -->
+                <div class="addons-container">
+                        <h3 class="header">Add-Ons</h3>
+                    <table>
+                        <thead>
+                            <tr class="sub-header">
+                                <th>Item</th>
+                                <th>Fee</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Isotonic Drink</td>
+                                <td>2.50</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <input type="number" value="0" min="0" max="10">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Socks</td>
+                                <td>5.00</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <input type="number" value="0" min="0" max="10">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Energy Bar</td>
+                                <td>3.00</td>
+                                <td>
+                                    <div class="quantity-control">
+                                        <input type="number" value="0" min="0" max="10">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Proceed Button -->
+                <button type="submit" class="proceed-button">PROCEED</button>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

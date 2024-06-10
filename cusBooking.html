@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
+    <title>Customer Booking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -22,10 +22,45 @@
             </div>
 
             <ul class="nav_links">
-                <li><a class="active" href="#">Home</a></li>
-                <li><a href="#">Book</a></li>
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active" href="#">Book</a></li>
                 <li><a href="#">Profile</a></li>
             </ul>
         </nav>
     </header>
+
+    <main id="customer-booking">
+        <section class="choose-sport">
+            <div class="container">
+                <a href="home.html" class="back-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <h2>Choose Your Sport</h2>
+                <div class="sports-container">
+                    <button class="sport">
+                        <img src="\resource\soccer.svg" alt="Futsal">
+                        <p>Futsal</p>
+                    </button>
+                    <button class="sport">
+                        <img src="\resource\badminton.svg" alt="Badminton">
+                        <p>Badminton</p>
+                    </button>
+                    <button class="sport">
+                        <img src="\resource\pingpong.png" alt="Ping-Pong">
+                        <p>Ping-Pong</p>
+                    </button>
+                    <button class="sport">
+                        <img src="\resource\snooker.png" alt="Snooker">
+                        <p>Snooker</p>
+                    </button>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
 </body>
+
+</html>
