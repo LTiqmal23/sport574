@@ -526,73 +526,165 @@ header {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    color: #000000; /* Text color for content inside the .choose-sport section */
+    color: #000000;
 }
 
 #customer-details .container {
-    background-color: #ffffff; /* White background for the container */
-    padding: 20px; /* Padding inside the container */
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for slight elevation effect */
-    text-align: center; /* Center text alignment for container content */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 #customer-details .back-button {
-    display: flex; /* Flexbox to center content inside */
-    align-items: center; /* Vertically center the SVG inside */
-    justify-content: center; /* Horizontally center the SVG inside */
-    width: 40px; /* Fixed width for the back button */
-    height: 40px; /* Fixed height for the back button */
-    background-color: #1A307F; /* Dark blue background color */
-    color: #ffffff; /* White text color */
-    border-radius: 5px; /* Slight rounding of the button corners */
-    transition: background-color 0.2s; /* Smooth transition on hover */
-    cursor: pointer; /* Pointer cursor on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #1A307F;
+    color: #ffffff;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    cursor: pointer;
 }
 
 #customer-details .back-button svg {
-    width: 24px; /* Width of the SVG icon */
-    height: 24px; /* Height of the SVG icon */
-    stroke: #ffffff; /* White stroke color */
-    stroke-width: 2; /* Thickness of the icon's stroke */
+    width: 24px;
+    height: 24px;
+    stroke: #ffffff;
+    stroke-width: 2;
 }
 
 #customer-details .back-button:hover {
-    background-color: #16275e; /* Darker shade on hover */
+    background-color: #16275e;
 }
 
-#customer-details .booking-details {
-    margin-top: 20px; /* Space above the booking details section */
-    background-color: #1A307F; /* Match table background color */
-    border-radius: 10px; /* Rounded corners for the container */
-    padding: 10px; /* Padding around the table */
+#customer-details .booking-details-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
-#customer-details .booking-details .table-container {
-    background-color: #1A307F; /* Dark blue background for the container */
-    padding: 10px; /* Padding inside the table container */
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden; /* Ensure rounded corners are applied */
-    display: flex; /* Flexbox to align content inside */
-    flex-direction: column; /* Stack items vertically */
-    align-items: flex-start; /* Align items to the start (left) */
+#customer-details .booking-details,
+#customer-details .booking-details2 {
+    flex-basis: calc(50% - 10px);
+    background-color: #1A307F;
+    border-radius: 10px;
+    padding: 10px;
 }
 
-#customer-details .booking-details .table-container h3 {
-    margin: 0 0 10px 0; /* Space below the heading */
-    color: #FF8A1E; /* Orange color for the heading text */
-    font-size: 1.5em; /* Adjusted font size */
+#customer-details .booking-details .table-container,
+#customer-details .booking-details2 .table-container {
+    background-color: #1A307F;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-#customer-details .booking-details table {
-    width: 100%; /* Full width for better alignment */
-    background-color: #1A307F; /* Dark blue background for the table */
-    color: #ffffff; /* White text for contrast */
-    border-collapse: collapse; /* Remove gaps between cells */
-    margin: 0; /* Reset margin */
+/* Customer Booking Detail */
+#customer-details .choose-sport {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #000000;
 }
 
-#customer-details .booking-details table td {
-    padding: 10px 15px; /* Padding inside each cell for better spacing */
-    border: none; /* Remove cell borders */
+#customer-details .container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
+
+#customer-details .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #1A307F;
+    color: #ffffff;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+#customer-details .back-button svg {
+    width: 24px;
+    height: 24px;
+    stroke: #ffffff;
+    stroke-width: 2;
+}
+
+#customer-details .back-button:hover {
+    background-color: #16275e;
+}
+
+#customer-details .booking-details-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#customer-details .booking-details,
+#customer-details .booking-details2 {
+    flex-basis: calc(50% - 10px);
+    background-color: #1A307F;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#customer-details .booking-details .table-container,
+#customer-details .booking-details2 .table-container {
+    background-color: #1A307F;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#customer-details .booking-details .table-container h3,
+#customer-details .booking-details2 .table-container2 h3 {
+    margin: 0 0 10px 0;
+    color: #FF8A1E;
+    font-size: 1.5em;
+}
+
+#customer-details .booking-details table,
+#customer-details .booking-details2 table {
+    width: 100%;
+    background-color: #1A307F;
+    color: #ffffff;
+    border-collapse: collapse;
+}
+
+#customer-details .booking-details table td,
+#customer-details .booking-details2 table td {
+    padding: 10px 15px;
+    border: none;
+}
+
+#customer-details .booking-details table,
+#customer-details .booking-details2 table {
+    width: 100%;
+    background-color: #1A307F;
+    color: #ffffff;
+    border-collapse: collapse;
+}
+
+#customer-details .booking-details table td,
+#customer-details .booking-details2 table td {
+    padding: 10px 15px;
+    border: none;
+}
+
