@@ -500,3 +500,21 @@ header {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+#customer-edit .proceed-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    align-self: flex-end;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#customer-edit .proceed-button:hover {
+    background-color: #c3e6cb;
+}
