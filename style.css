@@ -519,46 +519,80 @@ header {
     background-color: #c3e6cb;
 }
 
-/*Customer Edit Booking Detail*/
+/* Customer Booking Detail */
 #customer-details .choose-sport {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    color: #000000;
+    color: #000000; /* Text color for content inside the .choose-sport section */
 }
 
 #customer-details .container {
-    position: relative;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    background-color: #ffffff; /* White background for the container */
+    padding: 20px; /* Padding inside the container */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow for slight elevation effect */
+    text-align: center; /* Center text alignment for container content */
 }
 
 #customer-details .back-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: #1A307F;
-    color: #ffffff;
-    border-radius: 5px;
-    transition: background-color 0.2s;
-    cursor: pointer;
+    display: flex; /* Flexbox to center content inside */
+    align-items: center; /* Vertically center the SVG inside */
+    justify-content: center; /* Horizontally center the SVG inside */
+    width: 40px; /* Fixed width for the back button */
+    height: 40px; /* Fixed height for the back button */
+    background-color: #1A307F; /* Dark blue background color */
+    color: #ffffff; /* White text color */
+    border-radius: 5px; /* Slight rounding of the button corners */
+    transition: background-color 0.2s; /* Smooth transition on hover */
+    cursor: pointer; /* Pointer cursor on hover */
 }
 
 #customer-details .back-button svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: #ffffff;
-    stroke-width: 2;
+    width: 24px; /* Width of the SVG icon */
+    height: 24px; /* Height of the SVG icon */
+    stroke: #ffffff; /* White stroke color */
+    stroke-width: 2; /* Thickness of the icon's stroke */
 }
 
 #customer-details .back-button:hover {
-    background-color: #16275e;
+    background-color: #16275e; /* Darker shade on hover */
+}
+
+#customer-details .booking-details {
+    margin-top: 20px; /* Space above the booking details section */
+    background-color: #1A307F; /* Match table background color */
+    border-radius: 10px; /* Rounded corners for the container */
+    padding: 10px; /* Padding around the table */
+}
+
+#customer-details .booking-details .table-container {
+    background-color: #1A307F; /* Dark blue background for the container */
+    padding: 10px; /* Padding inside the table container */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners are applied */
+    display: flex; /* Flexbox to align content inside */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start (left) */
+}
+
+#customer-details .booking-details .table-container h3 {
+    margin: 0 0 10px 0; /* Space below the heading */
+    color: #FF8A1E; /* Orange color for the heading text */
+    font-size: 1.5em; /* Adjusted font size */
+}
+
+#customer-details .booking-details table {
+    width: 100%; /* Full width for better alignment */
+    background-color: #1A307F; /* Dark blue background for the table */
+    color: #ffffff; /* White text for contrast */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin: 0; /* Reset margin */
+}
+
+#customer-details .booking-details table td {
+    padding: 10px 15px; /* Padding inside each cell for better spacing */
+    border: none; /* Remove cell borders */
 }
