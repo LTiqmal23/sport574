@@ -406,6 +406,7 @@ header {
 }
 
 #customer-edit .container {
+    position: relative;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 15px;
@@ -438,12 +439,27 @@ header {
     background-color: #16275e;
 }
 
+#customer-edit .form-addons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+#customer-edit .form-container {
+    flex: 1;
+}
+
+#customer-edit .form-container .form-label {
+    padding-right: 20px;
+}
+
 #customer-edit .addons-container {
+    flex: 1;
     background-color: #1A307F;
     color: #ffffff;
     padding: 10px;
     border-radius: 5px;
-    margin-top: 20px;
 }
 
 #customer-edit .addons-container table {
@@ -459,11 +475,6 @@ header {
 
 #customer-edit .addons-container th {
     background-color: #FF8A1E;
-}
-
-#customer-edit .addons-container .header {
-    font-size: 18px;
-    font-weight: bold;
 }
 
 #customer-edit .addons-container .sub-header th {
@@ -490,3 +501,22 @@ header {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+#customer-edit .proceed-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    align-self: flex-end;
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#customer-edit .proceed-button:hover {
+    background-color: #c3e6cb;
+}
+

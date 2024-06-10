@@ -30,83 +30,87 @@
     <main id="customer-edit">
         <section class="choose-sport">
             <div class="container">
-                <!-- Form Section Container -->
-                <div class="form-container">
-                    <a href="home.html" class="back-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </a>
-                    <h2>Edit Details</h2>
-                    <form>
-                        <table>
-                            <tr>
-                                <td><label for="name">Name</label></td>
-                                <td><input type="text" id="name" name="name" value="Iqmal"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="phone">Phone No.</label></td>
-                                <td><input type="text" id="phone" name="phone" value="01856740283"></td>
-                            </tr>
-                            <tr>
-                                <td><label for="court">Court/Table Number</label></td>
-                                <td>
-                                    <select id="court" name="court">
-                                        <option value="F3" selected>F3</option>
-                                        <option value="F2" selected>F2</option>
-                                        <option value="F1" selected>F1</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                    </form>
-                </div>
+                <a href="home.html" class="back-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <h2>Edit Details</h2>
+                <div class="form-addons-container">
+                    <!-- Form Section Container -->
+                    <div class="form-container">
+                        <form>
+                            <table>
+                                <tr>
+                                    <td class="form-label"><label for="name">Name</label></td>
+                                    <td><input type="text" id="name" name="name" value="Iqmal"></td>
+                                </tr>
+                                <tr>
+                                    <td class="form-label"><label for="phone">Phone No.</label></td>
+                                    <td><input type="text" id="phone" name="phone" value="01856740283"></td>
+                                </tr>
+                                <tr>
+                                    <td class="form-label"><label for="court">Court/Table Number</label></td>
+                                    <td>
+                                        <select id="court" name="court">
+                                            <option value="F3" selected>F3</option>
+                                            <option value="F2">F2</option>
+                                            <option value="F1">F1</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
 
-                <!-- Add-ons Section Container -->
-                <div class="addons-container">
+                    <!-- Add-ons Section Container -->
+                    <div class="addons-container">
                         <h3 class="header">Add-Ons</h3>
-                    <table>
-                        <thead>
-                            <tr class="sub-header">
-                                <th>Item</th>
-                                <th>Fee</th>
-                                <th>Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Isotonic Drink</td>
-                                <td>2.50</td>
-                                <td>
-                                    <div class="quantity-control">
-                                        <input type="number" value="0" min="0" max="10">
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Socks</td>
-                                <td>5.00</td>
-                                <td>
-                                    <div class="quantity-control">
-                                        <input type="number" value="0" min="0" max="10">
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Energy Bar</td>
-                                <td>3.00</td>
-                                <td>
-                                    <div class="quantity-control">
-                                        <input type="number" value="0" min="0" max="10">
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <table>
+                            <thead>
+                                <tr class="sub-header">
+                                    <th>Item</th>
+                                    <th>Fee</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Isotonic Drink</td>
+                                    <td>2.50</td>
+                                    <td>
+                                        <div class="quantity-control">
+                                            <input type="number" value="0" min="0" max="10">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Socks</td>
+                                    <td>5.00</td>
+                                    <td>
+                                        <div class="quantity-control">
+                                            <input type="number" value="0" min="0" max="10">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Energy Bar</td>
+                                    <td>3.00</td>
+                                    <td>
+                                        <div class="quantity-control">
+                                            <input type="number" value="0" min="0" max="10">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-
+<br>
+<br>
+<br>
                 <!-- Proceed Button -->
                 <button type="submit" class="proceed-button">PROCEED</button>
             </div>
