@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -84,12 +84,12 @@ header {
     float: left;
     color: #1A307F;
     font-size: 24px;
-    font-family: 'Inter Black';
     margin-left: 10px;
     position: absolute;
     top: 30px;
     left: 130px;
     font-size: 30px;
+    font-weight: 800;
 }
 
 .logo {
@@ -283,18 +283,17 @@ header {
 }
 
 .home-desc h1 {
-    font-family: 'Inter Black';
     font-size: 60px;
     color: #ffffff;
 }
 
 .home-desc a {
-    font-family: 'Inter Black';
     color: #000000;
     text-decoration: none;
     background-color: #FF8A1E;
     border-radius: 10px;
     padding: 10px 20px 10px 20px;
+    font-weight: 600;
 }
 
 .home-icon table {
@@ -501,22 +500,3 @@ header {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
-#customer-edit .proceed-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    align-self: flex-end;
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#customer-edit .proceed-button:hover {
-    background-color: #c3e6cb;
-}
-
