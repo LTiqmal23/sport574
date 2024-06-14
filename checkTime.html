@@ -10,11 +10,43 @@
         .check-container {
             background-color: #fff;
             width: 80%;
+            margin: 20px auto;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 20px auto;
+        }
+
+        .check-header {
+            padding: 15px;
+        }
+
+        .check-header h1 {
+            display: inline-block;
+            position: relative;
+        }
+
+        .check-header h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+            background: #1A307F;
+            border-radius: 3px;
+        }
+
+        .check-wrapper {
+            width: 90%;
+        }
+
+        .check-wrapper form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .check-wrapper {
@@ -22,13 +54,21 @@
         }
 
         .input-box {
-            width: 90%;
+            width: 70%;
             margin-top: 20px;
-            background-color: salmon;
         }
 
-        .input-box input {
-            margin: 20px;
+        .input-box input,
+        .input-box select {
+            height: 100%;
+            width: 100%;
+            background-color: #d9d9d9;
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #000000;
+            padding: 15px 45px 15px 20px;
         }
     </style>
 </head>
@@ -54,28 +94,31 @@
             <h1>Choose Time and Date</h1>
         </div>
 
+
         <div class="check-wrapper">
-            <div class="input-box">
-                <label>Sport</label>
-                <select>
-                    <option>Futsal</option>
-                </select>
-            </div>
+            <form action="#" method="post">
+                <div class="input-box">
+                    <label>Sport</label>
+                    <select>
+                        <option>Futsal</option>
+                    </select>
+                </div>
 
-            <div class="input-box">
-                <label>Date</label>
-                <input type="date">
-            </div>
+                <div class="input-box">
+                    <label>Date</label>
+                    <input type="date">
+                </div>
 
-            <div class="input-box">
-                <label>Start Time</label>
-                <input type="time">
-            </div>
+                <div class="input-box">
+                    <label>Start Time</label>
+                    <input type="time">
+                </div>
 
-            <div class="input-box">
-                <label>End Time</label>
-                <input type="time">
-            </div>
+                <div class="input-box">
+                    <label>End Time</label>
+                    <input type="time">
+                </div>
+            </form>
         </div>
 
         <div class="check-table">
@@ -92,6 +135,7 @@
             </table>
         </div>
     </div>
+
 </body>
 
 </html>
