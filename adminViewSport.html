@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Time</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            background-color: #fff;
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            padding: 15px;
+        }
+
+        .title h1 {
+            display: inline-block;
+            position: relative;
+            color: #000;
+            font-size: 30px;
+        }
+
+        .title h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+            background: #1A307F;
+            border-radius: 3px;
+        }
+
+        .content {
+            width: 90%;
+        }
+
+        .content table {
+            width: 80%;
+            text-align: center;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .content th {
+            padding: 10px;
+        }
+
+        .content td {
+            padding: 10px;
+        }
+
+        .content .header {
+            background-color: #FF8A1E;
+        }
+
+        .content .info {
+            background-color: #dfdfdf;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="site-logo">
+                <img src="resource/logo.svg">
+                <h1>SPORTFUSION</h1>
+            </div>
+
+            <ul class="nav_links">
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active" href="#">Book</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="title">
+            <h1>View Bookings</h1>
+        </div>
+
+        <div class="content">
+            <table>
+                <tr class="header">
+                    <th>No</th>
+                    <th>Sport ID</th>
+                    <th>No of Court</th>
+                    <th>Remark</th>
+                </tr>
+
+                <tr class="info">
+                    <td>1</td>
+                    <td>10010</td>
+                    <td>F3</td>
+                    <td><a href="#">View Details</a></td>
+                </tr>
+
+                <tr class="info">
+                    <td>1</td>
+                    <td>10010</td>
+                    <td>F3</td>
+                    <td><a href="#">View Details</a></td>
+                </tr>
+
+                <tr class="info">
+                    <td>1</td>
+                    <td>10010</td>
+                    <td>F3</td>
+                    <td><a href="#">View Details</a></td>
+                </tr>
+
+                <tr class="info">
+                    <td>1</td>
+                    <td>10010</td>
+                    <td>F3</td>
+                    <td><a href="#">View Details</a></td>
+                </tr>
+
+                <tr class="info">
+                    <td>1</td>
+                    <td>10010</td>
+                    <td>F3</td>
+                    <td><a href="#">View Details</a></td>
+                </tr>
+
+
+
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
