@@ -6,6 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Time</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .check-container {
+            background-color: #fff;
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+
+        .check-wrapper {
+            width: 90%;
+        }
+
+        .input-box {
+            width: 90%;
+            margin-top: 20px;
+            background-color: salmon;
+        }
+
+        .input-box input {
+            margin: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,10 +56,40 @@
 
         <div class="check-wrapper">
             <div class="input-box">
+                <label>Sport</label>
                 <select>
-                    <option></option>
+                    <option>Futsal</option>
                 </select>
             </div>
+
+            <div class="input-box">
+                <label>Date</label>
+                <input type="date">
+            </div>
+
+            <div class="input-box">
+                <label>Start Time</label>
+                <input type="time">
+            </div>
+
+            <div class="input-box">
+                <label>End Time</label>
+                <input type="time">
+            </div>
+        </div>
+
+        <div class="check-table">
+            <table>
+                <tr>
+                    <th>Court Number</th>
+                    <th>Availability</th>
+                </tr>
+
+                <tr>
+                    <td>F1</td>
+                    <td>Occupied</td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>
