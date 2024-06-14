@@ -8,31 +8,50 @@
 
 <body>
     <?php
-    $name = $_POST['name'];
-    $address = $_POST['name'];
-    $phone = $_POST['phone'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Retrieve input values
+        $name = filter_input(INPUT_POST, 'name');
+        $address = filter_input(INPUT_POST, 'address');
+        $phone = filter_input(INPUT_POST, 'phone');
+        $username = filter_input(INPUT_POST, 'username');
+        $password = filter_input(INPUT_POST, 'password');
 
-    // connection setting
-    $host = "localhost";
-    $dbusername = "root";
-    $dbpassword = "";
-    $dbname = "sportdb";
+        // Database connection settings
+        $host = "localhost";
+        $dbusername = "root";
+        $dbpassword = "";
+        $dbname = "sportdb";
 
-    // Database connection
-    $conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
-    if ($conn->connect_error) {
-        die('Connection failed: ' . $conn_->connect_error);
-    } else {
-        $stmt = "INSERT INTO `customer` (`CUSTID`, `CUSTNAME`, `CUSTADDRESS`, `CUSTPHONE`, `USERNAME`, `PASSWORD`) VALUES (NULL, '$name', '$address', '$phone', '$username', '$password')";
+        // database connection
+        $conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
 
-        if ($conn->query($stmt)) {
-            echo "New Record inserted";
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
         } else {
-            echo "Error";
+            // SQL for execution
+            $stmt = $conn->prepare("INSERT INTO `customer` (`CUSTNAME`, `CUSTADDRESS`, `CUSTPHONE`, `USERNAME`, `PASSWORD`) VALUES (?, ?, ?, ?, ?)");
+
+            if ($stmt) {
+                // Bind variables to the prepared statement as parameters
+                $stmt->bind_param("sssss", $name, $address, $phone, $username, $password);
+
+                // Execute the prepared statement
+                if ($stmt->execute()) {
+                    echo "New record inserted successfully";
+                } else {
+                    echo "Error executing query: " . $stmt->error;
+                }
+
+                // Close the statement
+                $stmt->close();
+            } else {
+                echo "Error preparing statement: " . $conn->error;
+            }
+
+            // Close the connection
+            $conn->close();
         }
-        $conn->close();
     }
     ?>
 </body>
