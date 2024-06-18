@@ -6,21 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Booking</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            flex: 0 1 auto;
+        }
+        main {
+            flex: 1 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 300px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            color: #000000;
+        }
+        .subtext {
+            font-size: 16px;
+            color: #666666;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .return-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f7931e;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-    <body>
-        <header>
-            <nav class="navbar">
-                <div class="site-logo">
-                    <img src="resource/logo.svg">
-                    <h1>SPORTFUSION</h1>
-                </div>
-    
-                <ul class="nav_links">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a class="active" href="cusBooking.html">Book</a></li>
-                    <li><a href="profile.html">Profile</a></li>
-                </ul>
-            </nav>
-        </header>
-    </body>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="site-logo">
+                <img src="resource/logo.svg" alt="Site Logo">
+                <h1>SPORTFUSION</h1>
+            </div>
+            <ul class="nav_links">
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active" href="cusBooking.html">Book</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Booking <br>Successful!</h1>
+            <div class="subtext">Thank you for support</div>
+            <a href="home.html" class="return-button">RETURN TO HOME</a>
+        </div>
+    </main>
+</body>
 </html>
