@@ -21,20 +21,28 @@
 
         .title {
             padding: 15px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;/* Center horizontally */
+            position: relative;/* Add position relative */
         }
 
+
         .title h1 {
-            display: inline-block;
-            position: relative;
             color: #000;
             font-size: 30px;
+            position: relative;
+            margin-left: 10px;
+            text-align: center;
+            /* Center text */
         }
 
         .title h1::after {
             content: '';
             position: absolute;
             left: 0;
-            bottom: 0;
+            bottom: -5px;
             width: 100%;
             height: 5px;
             background: #1A307F;
@@ -67,15 +75,35 @@
         .content .info {
             background-color: #dfdfdf;
         }
-    </style>
 
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #1A307F;
+            color: #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            margin-right: 10px;
+            position: absolute;
+            /* Position back button absolutely */
+            left: 20px;
+            /* Adjust left position for back button */
+            top: 50%;
+            /* Center vertically */
+            transform: translateY(-50%);
+            /* Center vertically */
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <nav class="navbar">
             <div class="site-logo">
-                <img src="resource/logo.svg">
+                <img src="resource/logo.svg" alt="Site Logo">
                 <h1>SPORTFUSION</h1>
             </div>
 
@@ -89,6 +117,9 @@
 
     <div class="container">
         <div class="title">
+            <a href="home.html" class="back-button">
+                <img src="resource/previous-btn.svg" alt="Back">
+            </a>
             <h1>Past Bookings</h1>
         </div>
 
@@ -115,134 +146,27 @@
                 </tr>
 
                 <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
+                    <td>2</td>
+                    <td>10011</td>
+                    <td>25-APR-2024</td>
+                    <td>1500H</td>
+                    <td>1700H</td>
+                    <td>F4</td>
+                    <td>RM150</td>
                 </tr>
 
                 <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
+                    <td>3</td>
+                    <td>10012</td>
+                    <td>26-APR-2024</td>
                     <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
+                    <td>1800H</td>
+                    <td>F5</td>
+                    <td>RM250</td>
                 </tr>
 
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
+                <!-- Additional rows can be added similarly -->
 
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
             </table>
         </div>
     </div>
