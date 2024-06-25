@@ -53,10 +53,6 @@
             align-items: center;
         }
 
-        .check-wrapper {
-            width: 90%;
-        }
-
         .input-box {
             width: 70%;
             margin-top: 20px;
@@ -81,18 +77,14 @@
 
         .check-table table {
             width: 100%;
-            text-align: center;
         }
 
         .check-table th {
             background-color: coral;
-            /* Set border size, style, and color */
         }
 
         .check-table td {
             background-color: #d9d9d9;
-            text-align: center;
-            /* Set border size, style, and color */
         }
     </style>
 </head>
@@ -115,15 +107,14 @@
 
     <div class="check-container">
         <div class="check-header">
-            <h1>Choose Time and Date</h1>
+            <h1>Validate Booking</h1>
         </div>
 
-
-        <table class="content">
-            <tr>
-                <td>
-                    <div class="check-wrapper">
-                        <form action="#" method="post">
+        <div class="check-wrapper">
+            <form action="#" method="post">
+                <table class="content">
+                    <tr>
+                        <td>
                             <div class="input-box">
                                 <label>Sport</label>
                                 <select>
@@ -145,34 +136,39 @@
                                 <label>End Time</label>
                                 <input type="time">
                             </div>
+                        </td>
 
-                            <div class="input-box d-flex justify-content-center">
-                                <button type="submit" href="validateDetail.html" class="btn btn-success ">Proceed
-                                    Booking</button>
+                        <td>
+                            <div class="input-box">
+                                <label>Name</label>
+                                <input type="text">
                             </div>
-                        </form>
-                    </div>
-                </td>
 
-                <td class="center-cell">
-                    <div class="check-table">
-                        <table>
-                            <tr>
-                                <th>Court Number</th>
-                                <th>Availability</th>
-                            </tr>
+                            <div class="input-box">
+                                <label>Phone No</label>
+                                <input type="text">
+                            </div>
 
-                            <tr>
-                                <td>F1</td>
-                                <td>Occupied</td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </table>
+                            <div class="input-box">
+                                <label>Court Number</label>
+                                <select>
+                                    <option>F1</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <div class="input-box d-flex justify-content-center">
+                                <button type="submit" href="#" class="btn btn-success">Proceed Booking</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
-
 </body>
 
 </html>
