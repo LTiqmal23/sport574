@@ -14,10 +14,7 @@
 
     function validate($data)
     {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
+        return htmlspecialchars(stripslashes(trim($data)));
     }
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -33,7 +30,7 @@
             exit();
         }
 
-        // Prepare and bind
+        // Prepare and bind for customer table
         $stmt = $conn->prepare("SELECT * FROM customer WHERE USERNAME=? AND PASSWORD=?");
         $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
@@ -41,27 +38,38 @@
 
         if ($result->num_rows === 1) {
             $row = $result->fetch_assoc();
-            if ($row['USERNAME'] === $username && $row['PASSWORD'] === $password) {
-                echo "Logged In";
-
-                $_SESSION['user_name'] = $row['USERNAME'];
-                $_SESSION['ID'] = $row['CUSTID'];
-
-                header("location: home.html");
-                exit();
-            } else {
-                header("Location: index.php?error=Incorrect username or password");
-                exit();
-            }
-        } else {
-            header("Location: index.php?error=Incorrect username or password");
+            // If username and password match
+            $_SESSION['username'] = $row['USERNAME'];
+            $_SESSION['ID'] = $row['CUSTID'];
+            header("location: home.html");
             exit();
         }
+
+        // Prepare and bind for admin table
+        $stmt = $conn->prepare("SELECT * FROM admin WHERE USERNAME=? AND PASSWORD=?");
+        $stmt->bind_param("ss", $username, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $row = $result->fetch_assoc();
+            // If username and password match
+            $_SESSION['username'] = $row['USERNAME'];
+            $_SESSION['ID'] = $row['ADMINID'];
+            header("location: home.html");
+            exit();
+        }
+
+        // If username or password is incorrect
+        header("Location: index.php?error=Incorrect username or password");
+        exit();
 
         $stmt->close();
         $conn->close();
     }
     ?>
+
+
 
 </body>
 

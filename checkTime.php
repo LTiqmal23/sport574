@@ -7,6 +7,7 @@
     <title>Check Time</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.bundle.min.js"></script>
     <style>
         .check-container {
             background-color: #fff;
@@ -95,6 +96,7 @@
             /* Set border size, style, and color */
         }
     </style>
+
 </head>
 
 <body>
@@ -118,22 +120,34 @@
             <h1>Choose Time and Date</h1>
         </div>
 
-
         <table class="content">
             <tr>
                 <td>
                     <div class="check-wrapper">
                         <form action="#" method="post">
                             <div class="input-box">
-                                <label>Sport</label>
-                                <select>
-                                    <option>Futsal</option>
+                                <label for="sport">Sport</label>
+                                <select id="sport" name="sport" class="form-control">
+                                    <?php
+                                    include "config.php";
+                                    $sql = "select SPORTID, SPORTNAME FROM SPORT";
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<option value='" . $row['SPORTID'] . "'>" . $row['SPORTNAME'] . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=''>No options available</option>";
+                                    }
+                                    $conn->close();
+                                    ?>
                                 </select>
                             </div>
 
                             <div class="input-box">
-                                <label>Date</label>
-                                <input type="date">
+                                <label for="bookdate">Date</label>
+                                <input type="date" id="bookdate" name="bookdate">
                             </div>
 
                             <div class="input-box">
@@ -156,23 +170,54 @@
 
                 <td class="center-cell">
                     <div class="check-table">
-                        <table>
-                            <tr>
-                                <th>Court Number</th>
-                                <th>Availability</th>
-                            </tr>
-
-                            <tr>
-                                <td>F1</td>
-                                <td>Occupied</td>
-                            </tr>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Court Number</th>
+                                    <th>Availability</th>
+                                </tr>
+                            </thead>
+                            <tbody id="court-details">
+                            </tbody>
                         </table>
                     </div>
                 </td>
             </tr>
         </table>
     </div>
+    <script>
+        let selectedSport = '';
 
+        document.getElementById('sport').addEventListener('change', function() {
+            selectedSport = this.value;
+
+            // AJAX request to PHP script
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'processSport.php', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('court-details').innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send('sport=' + selectedSport);
+        });
+
+        document.getElementById('bookdate').addEventListener('change', function() {
+            var selectedDate = this.value;
+
+            // AJAX request to PHP script
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'processDate.php', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('court-details').innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send('sport=' + selectedSport + '&date=' + selectedDate);
+        });
+    </script>
 </body>
 
 </html>
