@@ -60,7 +60,7 @@
 
         .input-box {
             width: 70%;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .input-box input,
@@ -73,7 +73,7 @@
             border-radius: 30px;
             font-size: 16px;
             color: #000000;
-            padding: 15px 45px 15px 20px;
+            padding: 10px 45px 10px 20px;
         }
 
         .content {
@@ -127,11 +127,13 @@
                         <form action="#" method="post">
                             <div class="input-box">
                                 <label for="sport">Sport</label>
-                                <select id="sport" name="sport" class="form-control">
+                                <select id="sport" name="sport" class="form-control" required>
+                                    <option>Select an option</option>
                                     <?php
                                     include "config.php";
                                     $sql = "select SPORTID, SPORTNAME FROM SPORT";
                                     $result = $conn->query($sql);
+
 
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
@@ -151,17 +153,22 @@
                             </div>
 
                             <div class="input-box">
-                                <label>Start Time</label>
-                                <input type="time">
+                                <label>Start Time (after 08:00 AM)</label>
+                                <input type="time" id="startTime" min="08:00" onchange="updateTime()" required>
                             </div>
 
                             <div class="input-box">
-                                <label>End Time</label>
-                                <input type="time">
+                                <label for="hoursBooked">Hours Booked</label>
+                                <input type="number" id="hoursBooked" min="1" required>
+                            </div>
+
+                            <div class="input-box">
+                                <label for="endTime">End Time (before 10:00 PM)</label>
+                                <input type="time" id="endTime" max="22:30" required readonly>
                             </div>
 
                             <div class="input-box d-flex justify-content-center">
-                                <button type="submit" href="validateDetail.html" class="btn btn-success ">Proceed
+                                <button type="submit" href="#" class="btn btn-success ">Proceed
                                     Booking</button>
                             </div>
                         </form>
@@ -217,6 +224,55 @@
             };
             xhr.send('sport=' + selectedSport + '&date=' + selectedDate);
         });
+
+        // time validation
+        function calculateEndTime() {
+            var startTime = document.getElementById('startTime').value;
+            var hoursBooked = parseInt(document.getElementById('hoursBooked').value);
+
+            if (startTime && hoursBooked) {
+                // Convert start time to a Date object
+                var startDateTime = new Date('1970-01-01T' + startTime + ':00');
+
+                // Add the booked hours to the start time
+                startDateTime.setHours(startDateTime.getHours() + hoursBooked);
+
+                // Extract the time in HH:MM format
+                var endHours = String(startDateTime.getHours()).padStart(2, '0');
+                var endMinutes = String(startDateTime.getMinutes()).padStart(2, '0');
+                var endTime = endHours + ':' + endMinutes;
+
+                // Set the end time input value
+                document.getElementById('endTime').value = endTime;
+
+                // Validate the end time
+                validateEndTime(endHours, endMinutes);
+            }
+        }
+
+        // Set MINUTES to 00
+        function resetMinutes() {
+            var input = document.getElementById('startTime');
+            var value = input.value;
+            var newValue = value.substring(0, 2) + ':00';
+            input.value = newValue;
+        }
+
+        // Alert if end time exceeds 22:30
+        function validateEndTime(endHours, endMinutes) {
+            if (parseInt(endHours) > 22 || (parseInt(endHours) === 22 && parseInt(endMinutes) > 30)) {
+                alert('End Time should not be more than 22:30 (10:30 PM). Please adjust the hours booked.');
+                document.getElementById('endTime').value = '';
+                document.getElementById('hoursBooked').value = 0;
+            }
+        }
+
+        document.getElementById('startTime').addEventListener('change', function() {
+            resetMinutes();
+            calculateEndTime();
+        });
+
+        document.getElementById('hoursBooked').addEventListener('change', calculateEndTime);
     </script>
 </body>
 
