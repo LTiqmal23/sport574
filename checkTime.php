@@ -195,6 +195,7 @@
     <script>
         let selectedSport = '';
 
+        // fetch COURT from SELECTED SPORT
         document.getElementById('sport').addEventListener('change', function() {
             selectedSport = this.value;
 
@@ -210,12 +211,29 @@
             xhr.send('sport=' + selectedSport);
         });
 
+        // fetch COURT from SELECTED DATE
         document.getElementById('bookdate').addEventListener('change', function() {
             var selectedDate = this.value;
 
             // AJAX request to PHP script
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'processDate.php', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('court-details').innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send('sport=' + selectedSport + '&date=' + selectedDate);
+        });
+
+        // fetch AVAILABLE COURT from SELECTED TIME
+        document.getElementById('startTime').addEventListener('change', function() {
+            var selectedStartTime = this.value;
+
+            // AJAX request to PHP script
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'processStartTime.php', true);
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
