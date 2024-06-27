@@ -39,17 +39,42 @@
         if ($bookingStmt->affected_rows > 0) {
             // addon processing
             // Process addons
+            // Process addons
             if (!empty($_POST['quantity'])) {
                 foreach ($_POST['quantity'] as $addonID => $quantity) {
                     if ($quantity > 0) {
-                        // Prepare the SQL query to insert addon details
-                        $addonStmt = $conn->prepare("
-                    INSERT INTO booking_addon (BOOKINGID, ADDONID, QUANTITY) 
-                    VALUES (?, ?, ?)
+                        // Fetch current quantity of the addon
+                        $inventoryStmt = $conn->prepare("
+                    SELECT ADDONQUANTITY FROM ADDON WHERE ADDONID = ?
                 ");
-                        $addonStmt->bind_param("iii", $booking_id, $addonID, $quantity);
-                        $addonStmt->execute();
-                        $addonStmt->close();
+                        $inventoryStmt->bind_param("i", $addonID);
+                        $inventoryStmt->execute();
+                        $result = $inventoryStmt->get_result();
+                        if ($result->num_rows > 0) {
+                            $row = $result->fetch_assoc();
+                            $currentQuantity = $row['ADDONQUANTITY'];
+
+                            // Calculate the new quantity
+                            $newQuantity = $currentQuantity - $quantity;
+
+                            // Update the addon quantity
+                            $quantityStmt = $conn->prepare("
+                        UPDATE ADDON SET ADDONQUANTITY = ? WHERE ADDONID = ?
+                    ");
+                            $quantityStmt->bind_param("ii", $newQuantity, $addonID);
+                            $quantityStmt->execute();
+                            $quantityStmt->close();
+
+                            // Insert the addon booking details
+                            $addonStmt = $conn->prepare("
+                        INSERT INTO booking_addon (BOOKINGID, ADDONID, QUANTITY) 
+                        VALUES (?, ?, ?)
+                    ");
+                            $addonStmt->bind_param("iii", $booking_id, $addonID, $quantity);
+                            $addonStmt->execute();
+                            $addonStmt->close();
+                        }
+                        $inventoryStmt->close();
                     }
                 }
             }

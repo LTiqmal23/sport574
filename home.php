@@ -103,21 +103,22 @@ $sessionID = $_SESSION['ID'];
                 <br>
                 <a href="checkTime.php">GET STARTED</a>
             </div>
+
             <div class="home-icon">
                 <table>
                     <tr>
                         <td rowspan="2">
-                            <img class="home-img1" src="\resource\home1.png">
+                            <img class="home-img1" src="/resource/home1.png">
                         </td>
 
                         <td>
-                            <img class="home-img2" src="\resource\home2.png">
+                            <img class="home-img2" src="/resource/home2.png">
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <img class="home-img2" src="\resource\home3.png">
+                            <img class="home-img2" src="/resource/home3.png">
                         </td>
                     </tr>
                 </table>
