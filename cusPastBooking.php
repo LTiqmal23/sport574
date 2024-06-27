@@ -1,20 +1,21 @@
 <?php
-// Database connection settings
-$host = "localhost";
-$dbusername = "root";
-$dbpassword = "";
-$dbname = "sportdb";
+session_start(); // Start the session
 
-// Create connection
-$conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
+if (!isset($_SESSION['ID'])) {
+    echo "<script>Log In First</script>";
+    header("Location: login.html");
+    exit();
+}
 
-// Check connection
+require_once("config.php");
+$sessionID = $_SESSION['ID'];
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
 // Query to fetch bookings
-$sql = "SELECT * FROM BOOKING";
+$sql = "select * FROM BOOKING WHERE CUSTID = $sessionID";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -26,7 +27,7 @@ $result = $conn->query($sql);
     <title>Past Bookings</title>
     <link rel="stylesheet" href="style.css">
     <style>
-                .container {
+        .container {
             background-color: #fff;
             width: 80%;
             margin: 20px auto;
@@ -43,8 +44,10 @@ $result = $conn->query($sql);
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: center;/* Center horizontally */
-            position: relative;/* Add position relative */
+            justify-content: center;
+            /* Center horizontally */
+            position: relative;
+            /* Add position relative */
         }
 
 
@@ -148,8 +151,7 @@ $result = $conn->query($sql);
                     <th>No</th>
                     <th>Booking ID</th>
                     <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th>Time Slot</th>
                     <th>Court</th>
                     <th>Total Payment</th>
                 </tr>
@@ -162,9 +164,8 @@ $result = $conn->query($sql);
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
                         echo "<td>" . $row['BOOKINGID'] . "</td>";
-                        echo "<td>" . date_format(date_create($row['BOOKINGDATE']), 'd-M-Y') . "</td>";
-                        echo "<td>" . date_format(date_create_from_format('H:i:s', $row['STARTTIME']), 'Hi') . "</td>";
-                        echo "<td>" . date_format(date_create_from_format('H:i:s', $row['ENDTIME']), 'Hi') . "</td>";
+                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
+                        echo "<td>" . $row['TIMESLOT'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
                         // You may need to fetch total payment from related tables or calculations
                         echo "<td>RMXXX</td>"; // Placeholder for total payment

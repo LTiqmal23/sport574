@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -124,7 +127,7 @@
             <tr>
                 <td>
                     <div class="check-wrapper">
-                        <form action="#" method="post">
+                        <form action="validateDetail.php" method="post">
                             <div class="input-box">
                                 <label for="sport">Sport</label>
                                 <select id="sport" name="sport" class="form-control" required>
