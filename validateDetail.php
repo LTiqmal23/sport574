@@ -108,7 +108,7 @@ if ($resultSportName->num_rows > 0) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="home.php">
                 <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                 SPORTFUSION
             </a>
@@ -117,9 +117,6 @@ if ($resultSportName->num_rows > 0) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Book</a>
                     </li>

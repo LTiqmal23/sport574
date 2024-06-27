@@ -16,6 +16,7 @@ $sessionID = $_SESSION['ID'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         /* Home Page */
@@ -60,17 +61,29 @@ $sessionID = $_SESSION['ID'];
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a class="active" href="home.html">Home</a></li>
-                <li><a href="cusPastBooking.php">Book</a></li>
-                <li><a href="profile.html">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
@@ -87,7 +100,7 @@ $sessionID = $_SESSION['ID'];
                 </h1>
                 <br>
                 <br>
-                <a href="logIn.html">GET STARTED</a>
+                <a href="checkTime.php">GET STARTED</a>
             </div>
             <div class="home-icon">
                 <table>

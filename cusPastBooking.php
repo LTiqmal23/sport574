@@ -123,17 +123,29 @@ $result = $conn->query($sql);
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg" alt="Site Logo">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a href="home.html">Home</a></li>
-                <li><a class="active" href="#">Book</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
         </nav>
     </header>
 

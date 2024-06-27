@@ -15,7 +15,6 @@ $sessionID = $_SESSION['ID'];
 // fetch from previous page
 $preDate = $_POST['bookingdate'];
 $preTimeSlot = $_POST['timeslot'];
-$preSportName = $_POST['sport'];
 $preCourtID = $_POST['court'];
 $preHoursBooked = $_POST['hoursbooked'];
 // selecting SPORTNAME
@@ -123,17 +122,29 @@ include "config.php";
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a class="active" href="#">Home</a></li>
-                <li><a href="#">Book</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
@@ -147,8 +158,15 @@ include "config.php";
             <tr>
                 <td>
                     <div class="check-wrapper">
-                        <form id="addonForm" action="#" method="post">
+                        <form id="addonForm" action="processBooking.php" method="post">
                             <div class="input-box">
+                                <!-- hidden input -->
+                                <input type="hidden" id="court" name="court" value="<?php echo $preCourtID; ?>">
+                                <input type="hidden" id="hoursbooked" name="hoursbooked" value="<?php echo $preHoursBooked; ?>">
+                                <input type="hidden" id="timeslot" name="timeslot" value="<?php echo $preTimeSlot; ?>">
+                                <input type="hidden" id="bookingdate" name="bookingdate" value="<?php echo $preDate; ?>">
+
+                                <!-- display -->
                                 <?php
                                 include "config.php";
                                 $sql = "SELECT ADDONID, ADDONNAME, ADDONPRICE FROM ADDON";

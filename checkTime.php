@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+session_start(); // Start the session
 
+if (!isset($_SESSION['ID'])) {
+    echo "<script>Log In First</script>";
+    header("Location: login.html");
+    exit();
+}
+
+require_once("config.php");
+$sessionID = $_SESSION['ID'];
 ?>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Time</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="js/bootstrap.bundle.min.js"></script>
     <style>
         .check-container {
@@ -104,17 +113,32 @@
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a class="active" href="#">Home</a></li>
-                <li><a href="#">Book</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
@@ -133,7 +157,6 @@
                                 <select id="sport" name="sport" class="form-control" required>
                                     <option>Select an option</option>
                                     <?php
-                                    include "config.php";
                                     $sql = "select SPORTID, SPORTNAME FROM SPORT";
                                     $result = $conn->query($sql);
 
