@@ -28,6 +28,7 @@ $sessionID = $_SESSION['ID'];
         }
 
         .home-desc h1 {
+            font-weight: 600;
             font-size: 60px;
             color: #ffffff;
         }
