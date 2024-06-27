@@ -17,7 +17,7 @@ $preDate = $_POST['bookingdate'];
 $preTimeSlot = $_POST['timeslot'];
 $preSportName = $_POST['sport'];
 $preCourtID = $_POST['court'];
-
+$preHoursBooked = $_POST['hoursbooked'];
 // selecting SPORTNAME
 include "config.php";
 
@@ -142,6 +142,7 @@ include "config.php";
             <h1>Choose Time and Date</h1>
         </div>
 
+
         <table class="content">
             <tr>
                 <td>
@@ -184,11 +185,16 @@ include "config.php";
                                     <th>Total</th>
                                 </tr>
                             </thead>
+
+
+
+
                             <tbody id="priceTable">
                                 <?php
                                 include "config.php";
-                                $hoursBooked = 2; // Example hours booked, replace with your logic
+                                $hoursBooked = $preHoursBooked; // Example hours booked, replace with your logic
 
+                                // Prepare the SQL query to fetch court information based on FACID
                                 $sqlSportName = "SELECT * FROM FACILITY WHERE FACID = ?";
                                 $stmt = $conn->prepare($sqlSportName);
                                 $stmt->bind_param("i", $preCourtID);
@@ -196,26 +202,32 @@ include "config.php";
                                 $resultCourt = $stmt->get_result();
 
                                 if ($resultCourt->num_rows > 0) {
-                                    while ($row = $resultCourt->fetch_assoc()) {
-                                        $facPrice = $row['FACPRICEPERHOUR'];
-                                        $courtTotal = $facPrice * $hoursBooked;
-                                        echo "<tr id='courtRow'>";
-                                        echo "<td>Court " . $preCourtID . "</td>";
-                                        echo "<td>RM" . number_format($facPrice, 2) . "</td>";
-                                        echo "<td>" . $hoursBooked . "</td>";
-                                        echo "<td>RM" . number_format($courtTotal, 2) . "</td>";
-                                        echo "</tr>";
-                                    }
+                                    // Fetch the single result
+                                    $row = $resultCourt->fetch_assoc();
+                                    $facPrice = $row['FACPRICEPERHOUR'];
+                                    $courtTotal = $facPrice * $hoursBooked;
+
+                                    // Display the court information only once
+                                    echo "<tr id='courtRow'>";
+                                    echo "<td>Court " . htmlspecialchars($preCourtID) . "</td>";
+                                    echo "<td>RM" . number_format($facPrice, 2) . "</td>";
+                                    echo "<td>" . htmlspecialchars($hoursBooked) . "</td>";
+                                    echo "<td>RM" . number_format($courtTotal, 2) . "</td>";
+                                    echo "</tr>";
                                 } else {
                                     echo "<script>alert('No court available');</script>";
                                 }
+
+                                // Close the prepared statement and database connection
+                                $stmt->close();
                                 ?>
+                                <!-- Grand Total row -->
+                                <tr id="grandTotalRow">
+                                    <td colspan="3"><strong>Grand Total</strong></td>
+                                    <td id="grandTotal">RM0.00</td>
+                                </tr>
                             </tbody>
                         </table>
-                        <button id="calculateTotalBtn" class="btn btn-primary">Calculate Grand Total</button>
-                        <div id="grandTotalDiv" style="display:none;">
-                            <strong>Grand Total: </strong><span id="grandTotalAmount">RM0.00</span>
-                        </div>
                     </div>
                 </td>
             </tr>
@@ -225,86 +237,60 @@ include "config.php";
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initial calculation for the court
-            calculateCourtTotal();
-
-            // Get all quantity inputs
-            const quantityInputs = document.querySelectorAll('.addon-quantity');
-
-            // Add event listeners to each input
-            quantityInputs.forEach(input => {
-                input.addEventListener('input', updateTable);
-            });
-
-            // Calculate Grand Total Button
-            const calculateTotalBtn = document.getElementById('calculateTotalBtn');
-            calculateTotalBtn.addEventListener('click', calculateGrandTotal);
-
-            function calculateCourtTotal() {
-                const courtRow = document.getElementById('courtRow');
-                const courtPrice = parseFloat(courtRow.cells[1].innerText.replace('RM', ''));
-                const hoursBooked = parseInt(courtRow.cells[2].innerText);
-                const courtTotal = courtPrice * hoursBooked;
-                courtRow.cells[3].innerText = 'RM' + courtTotal.toFixed(2);
-
-                return courtTotal;
-            }
-
-            function updateTable() {
-                const priceTable = document.getElementById('priceTable');
-
-                quantityInputs.forEach(input => {
-                    const addonName = input.getAttribute('data-name');
-                    const addonPrice = parseFloat(input.getAttribute('data-price'));
-                    const quantity = parseInt(input.value) || 0;
-                    const total = addonPrice * quantity;
-
-                    if (quantity > 0) {
-                        let row = document.getElementById('addon_' + addonName);
-                        if (!row) {
-                            row = document.createElement('tr');
-                            row.id = 'addon_' + addonName;
-                            row.innerHTML = `
-                        <td>${addonName}</td>
-                        <td>RM${addonPrice.toFixed(2)}</td>
-                        <td>${quantity}</td>
-                        <td>RM${total.toFixed(2)}</td>
-                    `;
-                            priceTable.appendChild(row);
-                        } else {
-                            row.cells[2].innerText = quantity;
-                            row.cells[3].innerText = 'RM' + total.toFixed(2);
-                        }
-                    } else {
-                        let row = document.getElementById('addon_' + addonName);
-                        if (row) {
-                            priceTable.removeChild(row);
-                        }
-                    }
-                });
-            }
-
+            // Function to calculate the grand total
             function calculateGrandTotal() {
-                const courtTotal = calculateCourtTotal();
-                let grandTotal = courtTotal; // Start with court total
+                let grandTotal = 0;
 
-                quantityInputs.forEach(input => {
-                    const addonPrice = parseFloat(input.getAttribute('data-price'));
+                // Get the court total
+                const courtRow = document.getElementById('courtRow');
+                const courtTotal = parseFloat(courtRow.querySelector('td:nth-child(4)').textContent.replace('RM', ''));
+                grandTotal += courtTotal;
+
+                // Clear previous addon rows
+                const addonRows = document.querySelectorAll('.addon-row');
+                addonRows.forEach(function(row) {
+                    row.remove();
+                });
+
+                // Get addon totals and add rows for each addon
+                const addonQuantities = document.querySelectorAll('.addon-quantity');
+                addonQuantities.forEach(function(input) {
+                    const price = parseFloat(input.getAttribute('data-price'));
                     const quantity = parseInt(input.value) || 0;
-                    const total = addonPrice * quantity;
-
                     if (quantity > 0) {
+                        const total = price * quantity;
+
+                        // Create a new row for the addon
+                        const newRow = document.createElement('tr');
+                        newRow.classList.add('addon-row');
+                        newRow.innerHTML = `
+                    <td>${input.getAttribute('data-name')}</td>
+                    <td>RM${price.toFixed(2)}</td>
+                    <td>${quantity}</td>
+                    <td>RM${total.toFixed(2)}</td>
+                `;
+
+                        // Insert the new row before the grand total row
+                        document.getElementById('grandTotalRow').before(newRow);
+
                         grandTotal += total;
                     }
                 });
 
-                document.getElementById('grandTotalAmount').innerText = 'RM' + grandTotal.toFixed(2);
-                document.getElementById('grandTotalDiv').style.display = 'block';
+                // Update the grand total in the table
+                document.getElementById('grandTotal').textContent = 'RM' + grandTotal.toFixed(2);
             }
+
+            // Add event listeners to the addon quantity inputs
+            const addonQuantities = document.querySelectorAll('.addon-quantity');
+            addonQuantities.forEach(function(input) {
+                input.addEventListener('input', calculateGrandTotal);
+            });
+
+            // Initial calculation of grand total
+            calculateGrandTotal();
         });
     </script>
-
-
 </body>
 
 </html>

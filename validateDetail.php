@@ -198,14 +198,23 @@ if ($resultSportName->num_rows > 0) {
                         ?>
                     </select>
                 </div>
-                <div class="col-md-6 input-box">
+
+
+                <!-- time details -->
+                <div class="col-md-4 input-box">
                     <label for="bookingdate" class="form-label">Booking Date</label>
                     <input type="text" class="form-control" id="bookingdate" name="bookingdate" value="<?php echo $preDate; ?>" readonly>
                 </div>
-                <div class="col-md-6 input-box">
+                <div class="col-md-4 input-box">
                     <label for="timeslot" class="form-label">Time Slot</label>
                     <input type="text" class="form-control" id="timeslot" name="timeslot" value="<?php echo $preTimeSlot; ?>" readonly>
                 </div>
+
+                <div class="col-md-4 input-box">
+                    <label for="hoursbooked" class="form-label">Hours Booked</label>
+                    <input type="text" class="form-control" id="hoursbooked" name="hoursbooked" readonly>
+                </div>
+
 
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <button type="submit" class="btn btn-primary">Go to Add-On</button>
@@ -213,6 +222,41 @@ if ($resultSportName->num_rows > 0) {
             </form>
         </div>
     </div>
+    <script>
+        function calculateHoursBooked(timeslot) {
+            // Remove the 'H' character and split the timeslot into start and end times
+            const times = timeslot.replace(/H/g, '').split('-');
+            const startTime = times[0];
+            const endTime = times[1];
+
+            // Parse hours and minutes from the start and end times
+            const startHours = parseInt(startTime.substring(0, 2));
+            const endHours = parseInt(endTime.substring(0, 2));
+
+            // Calculate the difference in hours
+            const hoursBooked = endHours - startHours;
+
+            return hoursBooked;
+        }
+
+        // Function to set the hours booked value
+        function setHoursBooked() {
+            const timeslot = document.getElementById('timeslot').value;
+            if (timeslot) {
+                const hoursBooked = calculateHoursBooked(timeslot);
+                document.getElementById('hoursbooked').value = hoursBooked;
+            }
+        }
+
+        // Set the hours booked on page load
+        document.addEventListener('DOMContentLoaded', setHoursBooked);
+
+        // Set the hours booked when the timeslot changes
+        document.getElementById('timeslot').addEventListener('change', setHoursBooked);
+    </script>
+
+
+
 </body>
 
 </html>
