@@ -221,7 +221,6 @@ $result = $stmt->get_result();
                     }
                 } else {
                     echo "<tr><td colspan='6'>No bookings found</td></tr>";
-                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
                 $conn->close();
                 ?>
