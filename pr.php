@@ -1,69 +1,10 @@
-<?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
-    echo "<script>alert('Log In First');</script>";
-    header("Location: index.php");
-    exit();
-}
-
-$sessionID = $_SESSION['ID'];
-$sessionUsername = $_SESSION['username'];
-
-include "config.php";
-
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateProfile'])) {
-    $newName = trim($_POST['name']);
-    $newAddress = trim($_POST['address']);
-    $newPhone = trim($_POST['phone']);
-
-    // Update the database
-    $updateSql = "UPDATE CUSTOMER SET CUSTNAME = ?, CUSTADDRESS = ?, CUSTPHONE = ? WHERE CUSTID = ?";
-    $updateStmt = $conn->prepare($updateSql);
-    $updateStmt->bind_param("sssi", $newName, $newAddress, $newPhone, $sessionID);
-
-    if ($updateStmt->execute()) {
-        echo "<script>alert('Profile updated successfully!');</script>";
-    } else {
-        echo "<script>alert('Error updating profile. Please try again.');</script>";
-    }
-
-    $updateStmt->close();
-}
-
-// Fetch customer data
-$sql = "SELECT * FROM CUSTOMER WHERE CUSTID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $sessionID);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $customerData = $result->fetch_assoc();
-} else {
-    $customerData = [
-        'CUSTNAME' => '',
-        'CUSTADDRESS' => '',
-        'CUSTPHONE' => '',
-        'USERNAME' => $sessionUsername
-    ];
-}
-
-$stmt->close();
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>Profile Form</title>
     <style>
         .check-container {
             background-color: #fff;
@@ -169,33 +110,6 @@ $conn->close();
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
-                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                    SPORTFUSION
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.php">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
     <div class="check-container">
         <div class="check-header">
             <h1>My Profile</h1>

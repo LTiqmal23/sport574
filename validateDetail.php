@@ -131,11 +131,6 @@ if ($resultSportName->num_rows > 0) {
         </div>
     </nav>
 
-
-    <div class="container">
-
-    </div>
-
     <div class="check-container">
         <div class="check-header">
             <h1>Validate Booking</h1>
@@ -156,8 +151,9 @@ if ($resultSportName->num_rows > 0) {
                     <input type="text" class="form-control" id="address" placeholder="UiTM Kuala Terengganu" value="<?php echo $preCustAddress; ?>" readonly>
                 </div>
                 <div class="col-md-6 input-box">
-                    <label for="sport" class="form-label">Sport</label>
-                    <input type="text" class="form-control" id="sport" name="sport" value="<?php echo $preSportName; ?>" readonly>
+
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($customerData['CUSTPHONE']); ?>" placeholder="Enter your phone number">
                 </div>
                 <div class="col-md-6 input-box">
                     <label for="court" class="form-label">Court</label>
