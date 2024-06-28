@@ -74,7 +74,7 @@ $sessionID = $_SESSION['ID'];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Book</a>
+                            <a class="nav-link" href="cusPastBooking.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Profile</a>
