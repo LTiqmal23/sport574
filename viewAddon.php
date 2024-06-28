@@ -3,22 +3,19 @@
 session_start();
 require_once('config.php');
 
-// Update addon details if form is submitted
+// Handle update of existing addons
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
     $id = $_POST['updateID'];
     $name = $_POST['addonName'];
     $price = $_POST['addonPrice'];
     
-    // Check if addonQuantity is set in the form submission
     if (isset($_POST['addonQuantity'])) {
         $quantity = $_POST['addonQuantity'];
 
-        // Prepare an update statement
         $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
         $stmt = $conn->prepare($update_sql);
         $stmt->bind_param("sdii", $name, $price, $quantity, $id);
 
-        // Execute the update
         if ($stmt->execute()) {
             echo "<div class='alert alert-success'>Addon updated successfully.</div>";
         } else {
@@ -29,12 +26,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
     }
 }
 
+// Handle insertion of new addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newAddon'])) {
+    $name = $_POST['newAddonName'];
+    $price = $_POST['newAddonPrice'];
+    $quantity = $_POST['newAddonQuantity'];
+
+    $insert_sql = "INSERT INTO ADDON (ADDONNAME, ADDONPRICE, ADDONQUANTITY) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($insert_sql);
+    $stmt->bind_param("sdi", $name, $price, $quantity);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>New addon inserted successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error inserting addon: " . $conn->error . "</div>";
+    }
+}
+
 // Fetch all addons
 $sql = "SELECT * FROM ADDON";
 $result = mysqli_query($conn, $sql);
 ?>
-<html lang="en">
 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +56,6 @@ $result = mysqli_query($conn, $sql);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -111,14 +124,31 @@ $result = mysqli_query($conn, $sql);
                             </tbody>
                         </table>
 
-                        <div class="d-grid gap-2 d-md-block">
-                            <a class="btn btn-success" type="button" href="formStudent.php">Insert New Addon</a>
-                        </div>
+                        <!-- New Addon Form -->
+                        <h3 class="text-center mt-5">Insert New Addon</h3>
+                        <form method="post" action="" class="mt-3">
+                            <input type="hidden" name="newAddon" value="true">
+                            <div class="form-group">
+                                <label for="newAddonName">Name</label>
+                                <input type="text" name="newAddonName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newAddonPrice">Price</label>
+                                <input type="text" name="newAddonPrice" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newAddonQuantity">Quantity</label>
+                                <input type="number" name="newAddonQuantity" class="form-control" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-success">Insert Addon</button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
-
 </html>
