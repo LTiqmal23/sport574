@@ -1,10 +1,66 @@
+<?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
+    header("Location: index.php");
+    exit();
+}
+
+$sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
+
+include "config.php";
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateProfile'])) {
+    $newName = trim($_POST['name']);
+    $newAddress = trim($_POST['address']);
+    $newPhone = trim($_POST['phone']);
+
+    // Update the database
+    $updateSql = "UPDATE CUSTOMER SET CUSTNAME = ?, CUSTADDRESS = ?, CUSTPHONE = ? WHERE CUSTID = ?";
+    $updateStmt = $conn->prepare($updateSql);
+    $updateStmt->bind_param("sssi", $newName, $newAddress, $newPhone, $sessionID);
+    
+    if ($updateStmt->execute()) {
+        echo "<script>alert('Profile updated successfully!');</script>";
+    } else {
+        echo "<script>alert('Error updating profile. Please try again.');</script>";
+    }
+    
+    $updateStmt->close();
+}
+
+// Fetch customer data
+$sql = "SELECT * FROM CUSTOMER WHERE CUSTID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $sessionID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $customerData = $result->fetch_assoc();
+} else {
+    $customerData = [
+        'CUSTNAME' => '',
+        'CUSTADDRESS' => '',
+        'CUSTPHONE' => '',
+        'USERNAME' => $sessionUsername
+    ];
+}
+
+$stmt->close();
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -35,48 +91,12 @@
             width: 100%;
         }
 
-        .profile-picture {
-            position: relative;
-        }
-
-        .profile-picture img {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            margin-right: 40px;
-        }
-
-        .edit-profile-link {
-            position: absolute;
-            bottom: -50px;
-            right: 70px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .edit-profile-link:hover {
-            background-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .edit-icon {
-            margin-right: 5px;
-        }
-
         .profile-details {
             flex-grow: 1;
         }
 
         .profile-details h2 {
             margin-top: 0;
-        }
-
-        .profile-details p {
-            margin: 10px 0;
         }
 
         .input-container {
@@ -100,18 +120,6 @@
             padding: 10px;
             width: 100%;
             box-sizing: border-box;
-        }
-
-        .edit-button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .edit-button img {
-            width: 20px;
-            height: 20px;
         }
 
         .action-buttons {
@@ -166,9 +174,7 @@
             background-color: darkgreen;
         }
     </style>
-
 </head>
-
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -200,26 +206,41 @@
     <main>
         <section class="profile-section">
             <div class="profile-container">
-
                 <div class="profile-details">
                     <h2>My Profile</h2>
 
-                    <div class="input-container">
-                        <label for="name">Name:</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="name" name="name" placeholder="Enter your name">
-                            <button class="edit-button">
-                                <img src="resource/edit.png" alt="Edit">
-                            </button>
+                    <form id="profileForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                        <div class="input-container">
+                            <label for="custid">Customer ID:</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="custid" name="custid" value="<?php echo htmlspecialchars($sessionID); ?>" readonly>
+                            </div>
+
+                            <label for="username">Username:</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($customerData['USERNAME']); ?>" readonly>
+                            </div>
+
+                            <label for="name">Name:</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($customerData['CUSTNAME']); ?>" placeholder="Enter your name">
+                            </div>
+
+                            <label for="address">Address:</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="address" name="address" value="<?php echo htmlspecialchars($customerData['CUSTADDRESS']); ?>" placeholder="Enter your address">
+                            </div>
+
+                            <label for="phone">Phone Number:</label>
+                            <div class="input-wrapper">
+                                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($customerData['CUSTPHONE']); ?>" placeholder="Enter your phone number">
+                            </div>
                         </div>
-                        <label for="phone">Phone Number:</label>
-                        <div class="input-wrapper">
-                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
-                            <button class="edit-button">
-                                <img src="resource/edit.png" alt="Edit">
-                            </button>
+                        <div class="save-button-container">
+                            <button type="submit" class="save-button" name="updateProfile">Save</button>
                         </div>
-                    </div>
+                    </form>
+
                     <div class="action-buttons">
                         <a href="cusPastBooking.php" class="action-button">
                             <img src="resource/book.png" alt="View Past Booking">
@@ -228,11 +249,7 @@
                     </div>
                 </div>
             </div>
-            <div class="save-button-container">
-                <button class="save-button">Save</button>
-            </div>
         </section>
     </main>
 </body>
-
 </html>

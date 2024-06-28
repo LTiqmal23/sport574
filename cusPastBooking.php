@@ -1,18 +1,22 @@
 <?php
-session_start(); // Start the session
+session_start();
 
-if (!isset($_SESSION['ID'])) {
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
     header("Location: login.html");
     exit();
 }
 
-require_once("config.php");
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
+
+require_once("config.php");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $records_per_page = 5; // Number of records to display per page
@@ -215,15 +219,13 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['BOOKINGDATE'] . "</td>";
                         echo "<td>" . $row['TIMESLOT'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>"; // Assuming 'TOTAL' is the column name for total payment
+                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
                     echo "<tr><td colspan='6'>No bookings found</td></tr>";
-                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
-                $conn->close();
                 ?>
             </table>
 
