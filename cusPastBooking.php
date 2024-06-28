@@ -13,10 +13,26 @@ $sessionID = $_SESSION['ID'];
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+// Get the current page number from the query parameter; default to 1 if not set
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$records_per_page = 5; // Number of records to display per page
+$offset = ($page - 1) * $records_per_page;
 
-// Query to fetch bookings
-$sql = "select * FROM BOOKING WHERE CUSTID = $sessionID";
-$result = $conn->query($sql);
+// Fetch the total number of records
+$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ?";
+$total_records_stmt = $conn->prepare($total_records_sql);
+$total_records_stmt->bind_param("i", $sessionID);
+$total_records_stmt->execute();
+$total_records_result = $total_records_stmt->get_result();
+$total_records = $total_records_result->fetch_assoc()['total'];
+$total_pages = ceil($total_records / $records_per_page);
+
+// Query to fetch bookings with pagination
+$sql = "select P.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ? LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +41,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Past Bookings</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .container {
@@ -118,6 +135,11 @@ $result = $conn->query($sql);
             transform: translateY(-50%);
             /* Center vertically */
         }
+
+        .pagination {
+            margin-top: 20px;
+            /* Add space between the table and pagination */
+        }
     </style>
 </head>
 
@@ -135,13 +157,13 @@ $result = $conn->query($sql);
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Book</a>
+                            <a class="nav-link" href="checkTime.php">Book</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
+                            <a class="nav-link" href="profile.php">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -151,7 +173,7 @@ $result = $conn->query($sql);
 
     <div class="container">
         <div class="title">
-            <a href="home.html" class="back-button">
+            <a href="profile.php" class="back-button">
                 <img src="resource/previous-btn.svg" alt="Back">
             </a>
             <h1>Past Bookings</h1>
@@ -170,8 +192,7 @@ $result = $conn->query($sql);
 
                 <?php
                 if ($result->num_rows > 0) {
-                    $counter = 1;
-                    // Output data of each row
+                    $counter = 1 + $offset;
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
@@ -179,18 +200,34 @@ $result = $conn->query($sql);
                         echo "<td>" . $row['BOOKINGDATE'] . "</td>";
                         echo "<td>" . $row['TIMESLOT'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
-                        // You may need to fetch total payment from related tables or calculations
-                        echo "<td>RMXXX</td>"; // Placeholder for total payment
+                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>"; // Assuming 'TOTAL' is the column name for total payment
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='7'>No bookings found</td></tr>";
+                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
                 $conn->close();
                 ?>
 
             </table>
+
+            <!-- Pagination controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page - 1; ?>">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php } ?>
+                    <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page + 1; ?>">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </body>

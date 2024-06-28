@@ -22,6 +22,8 @@
         $preCourtID = $_POST['court'];
         $sessionID = $_SESSION['ID'];
 
+        $preTotal = $_POST['total'];
+
         // Prepare the SQL query to insert booking details
         $bookingStmt = $conn->prepare("
         INSERT INTO booking (BOOKINGDATE, TIMESLOT, HOURSBOOKED, ADMINID, FACID, CUSTID) 
@@ -44,9 +46,7 @@
                 foreach ($_POST['quantity'] as $addonID => $quantity) {
                     if ($quantity > 0) {
                         // Fetch current quantity of the addon
-                        $inventoryStmt = $conn->prepare("
-                    SELECT ADDONQUANTITY FROM ADDON WHERE ADDONID = ?
-                ");
+                        $inventoryStmt = $conn->prepare("select ADDONQUANTITY FROM ADDON WHERE ADDONID = ?");
                         $inventoryStmt->bind_param("i", $addonID);
                         $inventoryStmt->execute();
                         $result = $inventoryStmt->get_result();
@@ -59,17 +59,14 @@
 
                             // Update the addon quantity
                             $quantityStmt = $conn->prepare("
-                        UPDATE ADDON SET ADDONQUANTITY = ? WHERE ADDONID = ?
-                    ");
+                            UPDATE ADDON SET ADDONQUANTITY = ? WHERE ADDONID = ?");
                             $quantityStmt->bind_param("ii", $newQuantity, $addonID);
                             $quantityStmt->execute();
                             $quantityStmt->close();
 
                             // Insert the addon booking details
                             $addonStmt = $conn->prepare("
-                        INSERT INTO booking_addon (BOOKINGID, ADDONID, QUANTITY) 
-                        VALUES (?, ?, ?)
-                    ");
+                            INSERT INTO booking_addon (BOOKINGID, ADDONID, QUANTITY) VALUES (?, ?, ?)");
                             $addonStmt->bind_param("iii", $booking_id, $addonID, $quantity);
                             $addonStmt->execute();
                             $addonStmt->close();
@@ -78,6 +75,14 @@
                     }
                 }
             }
+
+            // payment
+            // Insert the addon payment
+            $payStmt = $conn->prepare("insert INTO PAYMENT (BOOKINGID, PAYMENTTOTAL) VALUES (?, ?)");
+            $payStmt->bind_param("id", $booking_id, $preTotal);
+            $payStmt->execute();
+            $payStmt->close();
+
             // Booking successfully inserted
             echo "<script>alert('Booking successful. Your booking ID is:  . $booking_id');
         window.location.href = 'successBooking.html'; // Replace 'nextPage.php' with the desired page

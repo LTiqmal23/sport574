@@ -118,13 +118,13 @@ if ($resultSportName->num_rows > 0) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Book</a>
+                        <a class="nav-link" href="checkTime.php">Book</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
+                        <a class="nav-link" href="profile.php">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
+                        <a class="nav-link" href="logout.php">Logout</a>
                     </li>
                 </ul>
             </div>

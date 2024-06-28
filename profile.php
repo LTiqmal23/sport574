@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .profile-section {
@@ -24,7 +25,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 70vh;
             margin: 0;
         }
 
@@ -170,29 +171,36 @@
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg" alt="Site Logo">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="checkTime.php">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.php">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="cusBooking.html">Book</a></li>
-                <li><a class="active" href="profile.html">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
     <main>
         <section class="profile-section">
             <div class="profile-container">
-                <div class="profile-picture">
-                    <img src="resource/pp.png" alt="Profile Picture">
-                    <a href="#" class="edit-profile-link">
-                        <span class="edit-icon">&#9998;</span> Edit Profile Picture
-                    </a>
-                </div>
+
                 <div class="profile-details">
                     <h2>My Profile</h2>
 
@@ -213,13 +221,9 @@
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <a href="view-pastBooking.html" class="action-button">
-                            <img src="/resource/book.png" alt="View Past Booking">
+                        <a href="cusPastBooking.php" class="action-button">
+                            <img src="resource/book.png" alt="View Past Booking">
                             <span class="action-label">View Past Booking</span>
-                        </a>
-                        <a href="send-feedback.html" class="action-button">
-                            <img src="/resource/feedback.png" alt="Send Feedback">
-                            <span class="action-label">Send Feedback</span>
                         </a>
                     </div>
                 </div>

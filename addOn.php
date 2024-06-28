@@ -134,13 +134,13 @@ include "config.php";
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Book</a>
+                            <a class="nav-link" href="checkTime.php">Book</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
+                            <a class="nav-link" href="profile.php">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -188,6 +188,8 @@ include "config.php";
                             <div class="input-box d-flex justify-content-center">
                                 <button type="submit" class="btn btn-success">Proceed Booking</button>
                             </div>
+
+                            <input type="hidden" id="total" name="total">
                         </form>
                     </div>
                 </td>
@@ -203,9 +205,6 @@ include "config.php";
                                     <th>Total</th>
                                 </tr>
                             </thead>
-
-
-
 
                             <tbody id="priceTable">
                                 <?php
@@ -297,6 +296,7 @@ include "config.php";
 
                 // Update the grand total in the table
                 document.getElementById('grandTotal').textContent = 'RM' + grandTotal.toFixed(2);
+                document.getElementById('total').value = grandTotal.toFixed(2);
             }
 
             // Add event listeners to the addon quantity inputs

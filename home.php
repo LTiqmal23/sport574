@@ -43,6 +43,7 @@ $sessionID = $_SESSION['ID'];
         }
 
         .home-icon table {
+            border-collapse: separate;
             border-spacing: 30px;
         }
 
@@ -74,13 +75,13 @@ $sessionID = $_SESSION['ID'];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Book</a>
+                            <a class="nav-link" href="checkTime.php">Book</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
+                            <a class="nav-link" href="profile.php">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -108,17 +109,17 @@ $sessionID = $_SESSION['ID'];
                 <table>
                     <tr>
                         <td rowspan="2">
-                            <img class="home-img1" src="/resource/home1.png">
+                            <img class="home-img1" src="resource/home1.png">
                         </td>
 
                         <td>
-                            <img class="home-img2" src="/resource/home2.png">
+                            <img class="home-img2" src="resource/home2.png">
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <img class="home-img2" src="/resource/home3.png">
+                            <img class="home-img2" src="resource/home3.png">
                         </td>
                     </tr>
                 </table>
