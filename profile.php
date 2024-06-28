@@ -19,38 +19,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateProfile'])) {
     $newAddress = trim($_POST['address']);
     $newPhone = trim($_POST['phone']);
 
-    // Update the database
-    $updateSql = "UPDATE CUSTOMER SET CUSTNAME = ?, CUSTADDRESS = ?, CUSTPHONE = ? WHERE CUSTID = ?";
-    $updateStmt = $conn->prepare($updateSql);
-    $updateStmt->bind_param("sssi", $newName, $newAddress, $newPhone, $sessionID);
-
-    if ($updateStmt->execute()) {
-        echo "<script>alert('Profile updated successfully!');</script>";
+    // Validate the input
+    if (empty($newName)) {
+        echo "<script>alert('Name cannot be empty');</script>";
     } else {
-        echo "<script>alert('Error updating profile. Please try again.');</script>";
-    }
+        // Update the database
+        $updateSql = "UPDATE CUSTOMER SET CUSTNAME = ?, CUSTADDRESS = ?, CUSTPHONE = ? WHERE CUSTID = ?";
+        if ($updateStmt = $conn->prepare($updateSql)) {
+            $updateStmt->bind_param("sssi", $newName, $newAddress, $newPhone, $sessionID);
 
-    $updateStmt->close();
+            if ($updateStmt->execute()) {
+                echo "<script>alert('Profile updated successfully!');</script>";
+            } else {
+                echo "<script>alert('Error updating profile. Please try again.');</script>";
+            }
+
+            $updateStmt->close();
+        } else {
+            echo "<script>alert('Error preparing statement.');</script>";
+        }
+    }
 }
 
 // Fetch customer data
 $sql = "SELECT * FROM CUSTOMER WHERE CUSTID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $sessionID);
-$stmt->execute();
-$result = $stmt->get_result();
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $sessionID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $customerData = $result->fetch_assoc();
+    if ($result->num_rows > 0) {
+        $customerData = $result->fetch_assoc();
+    } else {
+        $customerData = [
+            'CUSTNAME' => '',
+            'CUSTADDRESS' => '',
+            'CUSTPHONE' => '',
+            'USERNAME' => $sessionUsername
+        ];
+    }
+    $stmt->close();
 } else {
-    $customerData = [
-        'CUSTNAME' => '',
-        'CUSTADDRESS' => '',
-        'CUSTPHONE' => '',
-        'USERNAME' => $sessionUsername
-    ];
+    echo "<script>alert('Error preparing statement for fetching data.');</script>";
 }
-$stmt->close();
+
 $conn->close();
 ?>
 
@@ -227,7 +239,7 @@ $conn->close();
                         <img src="resource/book.png" alt="View Past Booking">
                         <span class="action-label">View Past Booking</span>
                     </a>
-                    <button type="submit" class="submit-button">Update Profile</button>
+                    <button type="submit" class="submit-button" name="updateProfile">Update Profile</button>
                 </div>
             </form>
         </div>
