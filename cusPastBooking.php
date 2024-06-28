@@ -2,7 +2,7 @@
 session_start(); // Start the session
 
 if (!isset($_SESSION['ID'])) {
-    echo "<script>Log In First</script>";
+    echo "<script>alert('Log In First');</script>";
     header("Location: login.html");
     exit();
 }
@@ -27,13 +27,11 @@ $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-// Query to fetch bookings with pagination
-$sql = "select P.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ? LIMIT ? OFFSET ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
-$stmt->execute();
-$result = $stmt->get_result();
+// Query to fetch bookings
+$sql = "select * FROM BOOKING WHERE CUSTID = $sessionID";
+$result = $conn->query($sql);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,7 +39,6 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Past Bookings</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .container {
@@ -62,11 +59,8 @@ $result = $stmt->get_result();
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Center horizontally */
             position: relative;
-            /* Add position relative */
         }
-
 
         .title h1 {
             color: #000;
@@ -74,7 +68,6 @@ $result = $stmt->get_result();
             position: relative;
             margin-left: 10px;
             text-align: center;
-            /* Center text */
         }
 
         .title h1::after {
@@ -99,10 +92,7 @@ $result = $stmt->get_result();
             padding: 10px;
         }
 
-        .content th {
-            padding: 10px;
-        }
-
+        .content th,
         .content td {
             padding: 10px;
         }
@@ -127,13 +117,34 @@ $result = $stmt->get_result();
             transition: background-color 0.2s;
             margin-right: 10px;
             position: absolute;
-            /* Position back button absolutely */
             left: 20px;
-            /* Adjust left position for back button */
             top: 50%;
-            /* Center vertically */
             transform: translateY(-50%);
-            /* Center vertically */
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #1A307F;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+            border: 1px solid #1A307F;
+            border-radius: 5px;
+        }
+
+        .pagination a.active {
+            background-color: #1A307F;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
         }
 
         .pagination {
@@ -147,7 +158,7 @@ $result = $stmt->get_result();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="#">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -156,6 +167,9 @@ $result = $stmt->get_result();
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="checkTime.php">Book</a>
                         </li>
@@ -206,10 +220,10 @@ $result = $stmt->get_result();
                     }
                 } else {
                     echo "<tr><td colspan='6'>No bookings found</td></tr>";
+                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
                 $conn->close();
                 ?>
-
             </table>
 
             <!-- Pagination controls -->
@@ -229,6 +243,19 @@ $result = $stmt->get_result();
                 </ul>
             </nav>
         </div>
+
+        <div class="pagination">
+            <?php
+            // Display pagination links
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $active = $i == $page ? "active" : "";
+                // Ensure the file path is correct
+                echo "<a href='cusPastBooking.php?page=$i' class='$active'>$i</a>";
+            }
+            ?>
+        </div>
+
+
     </div>
 </body>
 
