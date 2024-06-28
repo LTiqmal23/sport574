@@ -1,9 +1,36 @@
 <!DOCTYPE html>
 <?php
 session_start();
-
 require_once('config.php');
-$sql = "Select * from ADDON";
+
+// Update addon details if form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
+    $id = $_POST['updateID'];
+    $name = $_POST['addonName'];
+    $price = $_POST['addonPrice'];
+    
+    // Check if addonQuantity is set in the form submission
+    if (isset($_POST['addonQuantity'])) {
+        $quantity = $_POST['addonQuantity'];
+
+        // Prepare an update statement
+        $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("sdii", $name, $price, $quantity, $id);
+
+        // Execute the update
+        if ($stmt->execute()) {
+            echo "<div class='alert alert-success'>Addon updated successfully.</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error updating addon: " . $conn->error . "</div>";
+        }
+    } else {
+        echo "<div class='alert alert-warning'>Quantity field is required.</div>";
+    }
+}
+
+// Fetch all addons
+$sql = "SELECT * FROM ADDON";
 $result = mysqli_query($conn, $sql);
 ?>
 <html lang="en">
@@ -11,7 +38,7 @@ $result = mysqli_query($conn, $sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Student</title>
+    <title>View Addon</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -47,7 +74,7 @@ $result = mysqli_query($conn, $sql);
             <div class="col">
                 <div class="card mt-5">
                     <div class="card-header">
-                        <h2 class="display-6 text-center">View Student</h2>
+                        <h2 class="display-6 text-center">View Addon</h2>
                     </div>
 
                     <div class="card-body">
@@ -63,23 +90,26 @@ $result = mysqli_query($conn, $sql);
                             </thead>
 
                             <tbody>
-                                <tr>
-                                    <?php
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                    ?>
-                                        <td><?php echo $row['ADDONID']; ?></td>
-                                        <td><?php echo $row['ADDONNAME']; ?></td>
-                                        <td><?php echo $row['ADDONPRICE']; ?></td>
-                                        <td><?php echo $row['ADDONQUANTITY']; ?></td>
-
-                                        <td><a href="updateAddon.php?updateID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a></td>
-                                </tr>
-                            <?php
-                                    }
-                            ?>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                ?>
+                                    <tr>
+                                        <form method="post" action="">
+                                            <td><?php echo $row['ADDONID']; ?></td>
+                                            <td><input type="text" name="addonName" value="<?php echo htmlspecialchars($row['ADDONNAME']); ?>" class="form-control" required></td>
+                                            <td><input type="text" name="addonPrice" value="<?php echo htmlspecialchars($row['ADDONPRICE']); ?>" class="form-control" required></td>
+                                            <td><input type="number" name="addonQuantity" value="<?php echo htmlspecialchars($row['ADDONQUANTITY']); ?>" class="form-control" required></td>
+                                            <td>
+                                                <input type="hidden" name="updateID" value="<?php echo $row['ADDONID']; ?>">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
-
 
                         <div class="d-grid gap-2 d-md-block">
                             <a class="btn btn-success" type="button" href="formStudent.php">Insert New Addon</a>
