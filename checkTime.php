@@ -125,16 +125,13 @@ $sessionID = $_SESSION['ID'];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Home</a>
+                            <a class="nav-link" href="checkTime.php">Book</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Book</a>
+                            <a class="nav-link" href="profile.php">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -181,7 +178,7 @@ $sessionID = $_SESSION['ID'];
                             <div class="input-box">
                                 <label>Time Slot</label>
                                 <select id="timeslot" name="timeslot" class="form-control" required>
-                                    <option>Select an option</option>
+                                    <option value="">Select an option</option>
                                     <option value="0800H-0900H">0800H - 0900H</option>
                                     <option value="0900H-1000H">0900H - 1000H</option>
                                     <option value="1000H-1100H">1000H - 1100H</option>
@@ -281,54 +278,14 @@ $sessionID = $_SESSION['ID'];
         document.getElementById('bookdate').addEventListener('change', fetchAvailableCourts);
         document.getElementById('timeslot').addEventListener('change', fetchAvailableCourts);
 
-        // // time validation
-        // function calculateEndTime() {
-        //     var startTime = document.getElementById('startTime').value;
-        //     var hoursBooked = parseInt(document.getElementById('hoursBooked').value);
 
-        //     if (startTime && hoursBooked) {
-        //         // Convert start time to a Date object
-        //         var startDateTime = new Date('1970-01-01T' + startTime + ':00');
-
-        //         // Add the booked hours to the start time
-        //         startDateTime.setHours(startDateTime.getHours() + hoursBooked);
-
-        //         // Extract the time in HH:MM format
-        //         var endHours = String(startDateTime.getHours()).padStart(2, '0');
-        //         var endMinutes = String(startDateTime.getMinutes()).padStart(2, '0');
-        //         var endTime = endHours + ':' + endMinutes;
-
-        //         // Set the end time input value
-        //         document.getElementById('endTime').value = endTime;
-
-        //         // Validate the end time
-        //         validateEndTime(endHours, endMinutes);
-        //     }
-        // }
-
-        // // Set MINUTES to 00
-        // function resetMinutes() {
-        //     var input = document.getElementById('startTime');
-        //     var value = input.value;
-        //     var newValue = value.substring(0, 2) + ':00';
-        //     input.value = newValue;
-        // }
-
-        // // Alert if end time exceeds 22:30
-        // function validateEndTime(endHours, endMinutes) {
-        //     if (parseInt(endHours) > 22 || (parseInt(endHours) === 22 && parseInt(endMinutes) > 30)) {
-        //         alert('End Time should not be more than 22:30 (10:30 PM). Please adjust the hours booked.');
-        //         document.getElementById('endTime').value = '';
-        //         document.getElementById('hoursBooked').value = 0;
-        //     }
-        // }
-
-        // document.getElementById('startTime').addEventListener('change', function() {
-        //     resetMinutes();
-        //     calculateEndTime();
-        // });
-
-        // document.getElementById('hoursBooked').addEventListener('change', calculateEndTime);
+        document.getElementById("profileForm").addEventListener("submit", function(event) {
+            var timeslot = document.getElementById("timeslot").value;
+            if (timeslot === "") {
+                alert("Please select a time slot.");
+                event.preventDefault(); // Prevent form submission
+            }
+        });
     </script>
 </body>
 

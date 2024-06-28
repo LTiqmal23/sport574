@@ -54,8 +54,11 @@ $result = mysqli_query($conn, $sql);
                         <table class="table table-bordered text-center">
                             <thead class="table-dark">
                                 <tr class="bg-dark text-white">
-                                    <th>Matric No</th>
-
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 
@@ -64,17 +67,22 @@ $result = mysqli_query($conn, $sql);
                                     <?php
                                     while ($row = mysqli_fetch_assoc($result)) {
                                     ?>
-                                        <td><?php echo $row['Std_MatricNo']; ?></td>
-                                        <td><a href="detailStudent.php?updateMatric=<?php echo $row['Std_MatricNo']; ?>" class="btn btn-primary">View</a></td>
+                                        <td><?php echo $row['ADDONID']; ?></td>
+                                        <td><?php echo $row['ADDONNAME']; ?></td>
+                                        <td><?php echo $row['ADDONPRICE']; ?></td>
+                                        <td><?php echo $row['ADDONQUANTITY']; ?></td>
+
+                                        <td><a href="updateAddon.php?updateID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a></td>
                                 </tr>
                             <?php
                                     }
                             ?>
                             </tbody>
                         </table>
+
+
                         <div class="d-grid gap-2 d-md-block">
-                            <a class="btn btn-success" type="button" href="formStudent.php">Insert New Record</a>
-                            <a class="btn btn-success" type="button" href="reportStudent.php">View Report</a>
+                            <a class="btn btn-success" type="button" href="formStudent.php">Insert New Addon</a>
                         </div>
                     </div>
                 </div>
