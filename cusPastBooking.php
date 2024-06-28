@@ -28,8 +28,11 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "select * FROM BOOKING WHERE CUSTID = $sessionID";
-$result = $conn->query($sql);
+$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE B.CUSTID = ? LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +42,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Past Bookings</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         .container {
@@ -243,19 +247,6 @@ $result = $conn->query($sql);
                 </ul>
             </nav>
         </div>
-
-        <div class="pagination">
-            <?php
-            // Display pagination links
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $active = $i == $page ? "active" : "";
-                // Ensure the file path is correct
-                echo "<a href='cusPastBooking.php?page=$i' class='$active'>$i</a>";
-            }
-            ?>
-        </div>
-
-
     </div>
 </body>
 
