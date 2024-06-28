@@ -50,7 +50,6 @@ if ($result->num_rows > 0) {
         'USERNAME' => $sessionUsername
     ];
 }
-
 $stmt->close();
 $conn->close();
 ?>
