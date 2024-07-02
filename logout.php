@@ -4,7 +4,7 @@
 session_start();
 session_unset();
 session_destroy();
-header("location: login.html")
+header("location: login.php")
 ?>
 
 <head>
