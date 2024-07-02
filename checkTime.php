@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start(); // Start the session
+
+if (!isset($_SESSION['ID'])) {
+    echo "<script>Log In First</script>";
+    header("Location: login.html");
+    exit();
+}
+
+require_once("config.php");
+$sessionID = $_SESSION['ID'];
+?>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Time</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="js/bootstrap.bundle.min.js"></script>
     <style>
         .check-container {
@@ -60,7 +72,7 @@
 
         .input-box {
             width: 70%;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .input-box input,
@@ -73,7 +85,7 @@
             border-radius: 30px;
             font-size: 16px;
             color: #000000;
-            padding: 15px 45px 15px 20px;
+            padding: 10px 45px 10px 20px;
         }
 
         .content {
@@ -101,17 +113,29 @@
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="checkTime.php">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.php">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <ul class="nav_links">
-                <li><a class="active" href="#">Home</a></li>
-                <li><a href="#">Book</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
@@ -124,14 +148,15 @@
             <tr>
                 <td>
                     <div class="check-wrapper">
-                        <form action="#" method="post">
+                        <form action="validateDetail.php" method="post">
                             <div class="input-box">
                                 <label for="sport">Sport</label>
-                                <select id="sport" name="sport" class="form-control">
+                                <select id="sport" name="sport" class="form-control" required>
+                                    <option>Select an option</option>
                                     <?php
-                                    include "config.php";
                                     $sql = "select SPORTID, SPORTNAME FROM SPORT";
                                     $result = $conn->query($sql);
+
 
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
@@ -151,17 +176,28 @@
                             </div>
 
                             <div class="input-box">
-                                <label>Start Time</label>
-                                <input type="time">
-                            </div>
-
-                            <div class="input-box">
-                                <label>End Time</label>
-                                <input type="time">
+                                <label>Time Slot</label>
+                                <select id="timeslot" name="timeslot" class="form-control" required>
+                                    <option value="">Select an option</option>
+                                    <option value="0800H-0900H">0800H - 0900H</option>
+                                    <option value="0900H-1000H">0900H - 1000H</option>
+                                    <option value="1000H-1100H">1000H - 1100H</option>
+                                    <option value="1100H-1200H">1100H - 1200H</option>
+                                    <option value="1200H-1300H">1200H - 1300H</option>
+                                    <option value="1300H-1400H">1300H - 1400H</option>
+                                    <option value="1400H-1500H">1400H - 1500H</option>
+                                    <option value="1500H-1600H">1500H - 1600H</option>
+                                    <option value="1600H-1700H">1600H - 1700H</option>
+                                    <option value="1700H-1800H">1700H - 1800H</option>
+                                    <option value="1800H-1900H">1800H - 1900H</option>
+                                    <option value="1900H-2000H">1900H - 2000H</option>
+                                    <option value="2000H-2100H">2000H - 2100H</option>
+                                    <option value="2100H-2200H">2100H - 2200H</option>
+                                </select>
                             </div>
 
                             <div class="input-box d-flex justify-content-center">
-                                <button type="submit" href="validateDetail.html" class="btn btn-success ">Proceed
+                                <button type="submit" href="#" class="btn btn-success ">Proceed
                                     Booking</button>
                             </div>
                         </form>
@@ -186,8 +222,8 @@
         </table>
     </div>
     <script>
+        // fetch COURT from SELECTED SPORT
         let selectedSport = '';
-
         document.getElementById('sport').addEventListener('change', function() {
             selectedSport = this.value;
 
@@ -203,6 +239,7 @@
             xhr.send('sport=' + selectedSport);
         });
 
+        // fetch COURT from SELECTED DATE
         document.getElementById('bookdate').addEventListener('change', function() {
             var selectedDate = this.value;
 
@@ -216,6 +253,38 @@
                 }
             };
             xhr.send('sport=' + selectedSport + '&date=' + selectedDate);
+        });
+
+        function fetchAvailableCourts() {
+            var selectedSport = document.getElementById('sport').value;
+            var selectedDate = document.getElementById('bookdate').value;
+            var selectedTimeSlot = document.getElementById('timeslot').value;
+
+            if (selectedSport && selectedDate && selectedTimeSlot) {
+                // AJAX request to PHP script
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'processTimeSlot.php', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        document.getElementById('court-details').innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.send('sport=' + selectedSport + '&date=' + selectedDate + '&timeslot=' + selectedTimeSlot);
+            }
+        }
+
+        document.getElementById('sport').addEventListener('change', fetchAvailableCourts);
+        document.getElementById('bookdate').addEventListener('change', fetchAvailableCourts);
+        document.getElementById('timeslot').addEventListener('change', fetchAvailableCourts);
+
+
+        document.getElementById("profileForm").addEventListener("submit", function(event) {
+            var timeslot = document.getElementById("timeslot").value;
+            if (timeslot === "") {
+                alert("Please select a time slot.");
+                event.preventDefault(); // Prevent form submission
+            }
         });
     </script>
 </body>

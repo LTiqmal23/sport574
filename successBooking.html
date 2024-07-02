@@ -5,23 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Booking</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        body, html {
+        body,
+        html {
             height: 100%;
             margin: 0;
             display: flex;
             flex-direction: column;
         }
+
         header {
             flex: 0 1 auto;
         }
+
         main {
             flex: 1 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .container {
             background-color: #ffffff;
             padding: 20px;
@@ -31,16 +36,19 @@
             max-width: 300px;
             width: 100%;
         }
+
         h1 {
             font-size: 24px;
             color: #000000;
         }
+
         .subtext {
             font-size: 16px;
             color: #666666;
             margin-top: 10px;
             margin-bottom: 20px;
         }
+
         .return-button {
             display: inline-block;
             padding: 10px 20px;
@@ -52,18 +60,34 @@
         }
     </style>
 </head>
+
 <body>
     <header>
-        <nav class="navbar">
-            <div class="site-logo">
-                <img src="resource/logo.svg" alt="Site Logo">
-                <h1>SPORTFUSION</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="home.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24"
+                        class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <ul class="nav_links">
-                <li><a href="home.html">Home</a></li>
-                <li><a class="active" href="cusBooking.html">Book</a></li>
-                <li><a href="profile.html">Profile</a></li>
-            </ul>
         </nav>
     </header>
 
@@ -71,8 +95,9 @@
         <div class="container">
             <h1>Booking <br>Successful!</h1>
             <div class="subtext">Thank you for support</div>
-            <a href="home.html" class="return-button">RETURN TO HOME</a>
+            <a href="home.php" class="return-button">RETURN TO HOME</a>
         </div>
     </main>
 </body>
+
 </html>

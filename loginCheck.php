@@ -41,7 +41,7 @@
             // If username and password match
             $_SESSION['username'] = $row['USERNAME'];
             $_SESSION['ID'] = $row['CUSTID'];
-            header("location: home.html");
+            header("location: home.php");
             exit();
         }
 
@@ -56,7 +56,7 @@
             // If username and password match
             $_SESSION['username'] = $row['USERNAME'];
             $_SESSION['ID'] = $row['ADMINID'];
-            header("location: home.html");
+            header("location: homeAdmin.php");
             exit();
         }
 
