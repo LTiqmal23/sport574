@@ -1,13 +1,32 @@
+<?php
+// Database connection settings
+$host = "localhost";
+$dbusername = "root";
+$dbpassword = "";
+$dbname = "sportdb";
+
+// Create connection
+$conn = new mysqli($host, $dbusername, $dbpassword, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to fetch bookings
+$sql = "SELECT * FROM BOOKING";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Time</title>
+    <title>Past Bookings</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .container {
+                .container {
             background-color: #fff;
             width: 80%;
             margin: 20px auto;
@@ -135,37 +154,28 @@
                     <th>Total Payment</th>
                 </tr>
 
-                <tr class="info">
-                    <td>1</td>
-                    <td>10010</td>
-                    <td>24-APR-2024</td>
-                    <td>1400H</td>
-                    <td>1600H</td>
-                    <td>F3</td>
-                    <td>RM200</td>
-                </tr>
-
-                <tr class="info">
-                    <td>2</td>
-                    <td>10011</td>
-                    <td>25-APR-2024</td>
-                    <td>1500H</td>
-                    <td>1700H</td>
-                    <td>F4</td>
-                    <td>RM150</td>
-                </tr>
-
-                <tr class="info">
-                    <td>3</td>
-                    <td>10012</td>
-                    <td>26-APR-2024</td>
-                    <td>1600H</td>
-                    <td>1800H</td>
-                    <td>F5</td>
-                    <td>RM250</td>
-                </tr>
-
-                <!-- Additional rows can be added similarly -->
+                <?php
+                if ($result->num_rows > 0) {
+                    $counter = 1;
+                    // Output data of each row
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr class='info'>";
+                        echo "<td>" . $counter . "</td>";
+                        echo "<td>" . $row['BOOKINGID'] . "</td>";
+                        echo "<td>" . date_format(date_create($row['BOOKINGDATE']), 'd-M-Y') . "</td>";
+                        echo "<td>" . date_format(date_create_from_format('H:i:s', $row['STARTTIME']), 'Hi') . "</td>";
+                        echo "<td>" . date_format(date_create_from_format('H:i:s', $row['ENDTIME']), 'Hi') . "</td>";
+                        echo "<td>" . $row['FACID'] . "</td>";
+                        // You may need to fetch total payment from related tables or calculations
+                        echo "<td>RMXXX</td>"; // Placeholder for total payment
+                        echo "</tr>";
+                        $counter++;
+                    }
+                } else {
+                    echo "<tr><td colspan='7'>No bookings found</td></tr>";
+                }
+                $conn->close();
+                ?>
 
             </table>
         </div>
