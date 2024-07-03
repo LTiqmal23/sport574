@@ -38,7 +38,8 @@
 
                 // Execute the prepared statement
                 if ($stmt->execute()) {
-                    echo "New record inserted successfully";
+                    header("Location: login.php");
+                    exit();
                 } else {
                     echo "Error executing query: " . $stmt->error;
                 }

@@ -5,7 +5,7 @@ session_start(); // Start the session
 
 if (!isset($_SESSION['ID'])) {
     echo "<script>Log In First</script>";
-    header("Location: login.html");
+    header("Location: login.php");
     exit();
 }
 
