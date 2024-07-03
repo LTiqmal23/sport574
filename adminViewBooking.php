@@ -8,29 +8,28 @@ if (!isset($_SESSION['ID'])) {
 }
 
 require_once("config.php");
-$sessionID = $_SESSION['ID'];
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ?";
+$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID";
 $total_records_stmt = $conn->prepare($total_records_sql);
-$total_records_stmt->bind_param("i", $sessionID);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE B.CUSTID = ? LIMIT ? OFFSET ?";
+$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -162,7 +161,7 @@ $result = $stmt->get_result();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -171,11 +170,14 @@ $result = $stmt->get_result();
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                    <li class="nav-item">
+                            <a class="nav-link" href="viewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -188,9 +190,7 @@ $result = $stmt->get_result();
 
     <div class="container">
         <div class="title">
-            <a href="profile.php" class="back-button">
-                <img src="resource/previous-btn.svg" alt="Back">
-            </a>
+            
             <h1>Past Bookings</h1>
         </div>
 

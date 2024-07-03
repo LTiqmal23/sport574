@@ -65,7 +65,7 @@ $sessionID = $_SESSION['ID'];
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -78,7 +78,7 @@ $sessionID = $_SESSION['ID'];
                             <a class="nav-link" href="viewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="viewSport.php">Sport</a>
@@ -105,7 +105,7 @@ $sessionID = $_SESSION['ID'];
                 </h1>
                 <br>
                 <br>
-                <a href="checkTime.php">GET STARTED</a>
+                
             </div>
 
             <div class="home-icon">
