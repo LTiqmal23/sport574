@@ -55,6 +55,7 @@ $result = mysqli_query($conn, $sql);
 ?>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,6 +63,7 @@ $result = mysqli_query($conn, $sql);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -162,4 +164,5 @@ $result = mysqli_query($conn, $sql);
         </div>
     </div>
 </body>
+
 </html>
