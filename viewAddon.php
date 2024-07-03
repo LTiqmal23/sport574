@@ -8,22 +8,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
     $id = $_POST['updateID'];
     $name = $_POST['addonName'];
     $price = $_POST['addonPrice'];
-    
-    if (isset($_POST['addonQuantity'])) {
-        $quantity = $_POST['addonQuantity'];
+    $quantity = $_POST['addonQuantity'];
 
-        $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
-        $stmt = $conn->prepare($update_sql);
-        $stmt->bind_param("sdii", $name, $price, $quantity, $id);
+    $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("sdii", $name, $price, $quantity, $id);
 
-        if ($stmt->execute()) {
-            echo "<div class='alert alert-success'>Addon updated successfully.</div>";
-        } else {
-            echo "<div class='alert alert-danger'>Error updating addon: " . $conn->error . "</div>";
-        }
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>Addon updated successfully.</div>";
     } else {
-        echo "<div class='alert alert-warning'>Quantity field is required.</div>";
+        echo "<div class='alert alert-danger'>Error updating addon: " . $conn->error . "</div>";
     }
+}
+
+// Handle deletion of an addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteID'])) {
+    $id = $_POST['deleteID'];
+
+    $delete_sql = "DELETE FROM ADDON WHERE ADDONID=?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("i", $id);
+
+   
 }
 
 // Handle insertion of new addon
@@ -59,7 +65,7 @@ $result = mysqli_query($conn, $sql);
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="home.php">
+            <a class="navbar-brand" href="homeAdmin.php">
                 <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                 SPORTFUSION
             </a>
@@ -68,15 +74,18 @@ $result = mysqli_query($conn, $sql);
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="checkTime.php">Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="viewSport.php">Sport</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Logout</a>
-                    </li>
+                <li class="nav-item">
+                            <a class="nav-link" href="viewAddon.php">Addon</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="viewSport.php">Sport</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
                 </ul>
             </div>
         </div>
@@ -115,6 +124,8 @@ $result = mysqli_query($conn, $sql);
                                             <td>
                                                 <input type="hidden" name="updateID" value="<?php echo $row['ADDONID']; ?>">
                                                 <button type="submit" class="btn btn-primary">Save</button>
+                                                <input type="hidden" name="deleteID" value="<?php echo $row['ADDONID']; ?>">
+                                               <button type="submit" name="delete" class="btn btn-danger">Delete</button>
                                             </td>
                                         </form>
                                     </tr>
