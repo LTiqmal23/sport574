@@ -197,7 +197,7 @@ $sessionID = $_SESSION['ID'];
                             </div>
 
                             <div class="input-box d-flex justify-content-center">
-                                <button type="submit" href="#" class="btn btn-success ">Proceed
+                                <button type="submit" class="btn btn-success ">Proceed
                                     Booking</button>
                             </div>
                         </form>
@@ -222,10 +222,14 @@ $sessionID = $_SESSION['ID'];
         </table>
     </div>
     <script>
-        // fetch COURT from SELECTED SPORT
+        // Fetch COURT from SELECTED SPORT
         let selectedSport = '';
         document.getElementById('sport').addEventListener('change', function() {
             selectedSport = this.value;
+
+            // Reset other input fields
+            document.getElementById('bookdate').value = '';
+            document.getElementById('timeslot').selectedIndex = 0;
 
             // AJAX request to PHP script
             var xhr = new XMLHttpRequest();

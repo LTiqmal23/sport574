@@ -153,7 +153,7 @@ if ($resultSportName->num_rows > 0) {
                 <div class="col-md-6 input-box">
 
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($customerData['CUSTPHONE']); ?>" placeholder="Enter your phone number">
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<?php echo $preCustPhone; ?>" placeholder="Enter your phone number">
                 </div>
                 <div class="col-md-6 input-box">
                     <label for="court" class="form-label">Court</label>
@@ -184,6 +184,9 @@ if ($resultSportName->num_rows > 0) {
                             }
                         } else {
                             echo "<option value=''>No options available</option>";
+                            echo "<script>alert('No courts available');</script>";
+                            echo "<script>window.location.href='checkTime.php';</script>";
+                            exit();
                         }
 
                         // Close the statement and connection
