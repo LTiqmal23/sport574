@@ -71,18 +71,18 @@ $result = $stmt->get_result();
         }
 
         .title h1 {
-            color: #000;
-            font-size: 30px;
+            display: inline-block;
             position: relative;
-            margin-left: 10px;
-            text-align: center;
+            font-family: 'Poppins';
+            font-weight: 600;
+            color: #000;
         }
 
         .title h1::after {
             content: '';
             position: absolute;
             left: 0;
-            bottom: -5px;
+            bottom: 0;
             width: 100%;
             height: 5px;
             background: #1A307F;
@@ -207,6 +207,7 @@ $result = $stmt->get_result();
                     <th>Time Slot</th>
                     <th>Court</th>
                     <th>Total Payment</th>
+                    <th>Action</th>
                 </tr>
 
                 <?php
@@ -220,6 +221,10 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['TIMESLOT'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
                         echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
+                ?>
+                        <td><a href="scrollable.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
+                        </td>
+                <?php
                         echo "</tr>";
                         $counter++;
                     }
