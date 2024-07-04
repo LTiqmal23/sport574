@@ -262,7 +262,7 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['ADDONPRICE'] . "</td>";
                         echo "<td>" . $row['ADDONQUANTITY'] . "</td>";
                 ?>
-                        <td><a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">View</a></td>
+                        <td><a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a></td>
                         </td>
                 <?php
                         echo "</tr>";
