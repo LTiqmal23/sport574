@@ -115,7 +115,7 @@ $sessionID = $_SESSION['ID'];
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeCus.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -125,7 +125,7 @@ $sessionID = $_SESSION['ID'];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profile</a>
