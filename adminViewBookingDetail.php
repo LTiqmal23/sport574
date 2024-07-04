@@ -239,7 +239,7 @@ $viewID = $_GET["viewID"];
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -249,10 +249,13 @@ $viewID = $_GET["viewID"];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -266,8 +269,10 @@ $viewID = $_GET["viewID"];
     <main id="customer-details">
         <section class="choose-sport">
             <div class="container">
-                <a href="cusPastBooking.php" class="back-button">
-                    <img src="resource/backButton.svg" alt="Back">
+                <a href="adminViewBooking.php" class="back-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18L9 12L15 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                 </a>
                 <h1>Booking Details</h1>
 

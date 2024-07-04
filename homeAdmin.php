@@ -75,7 +75,7 @@ $sessionID = $_SESSION['ID'];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="viewAddon.php">Addon</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
@@ -107,7 +107,7 @@ $sessionID = $_SESSION['ID'];
                 <br>
 
                 <a>WELCOME ADMIN ! </a>
-                
+
             </div>
 
             <div class="home-icon">

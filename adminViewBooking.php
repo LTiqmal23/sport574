@@ -1,17 +1,11 @@
+<!DOCTYPE html>
 <?php
-session_start(); // Start the session
+session_start();
+require_once('config.php');
 
-if (!isset($_SESSION['ID'])) {
-    echo "<script>alert('Log In First');</script>";
-    header("Location: login.php");
-    exit();
-}
-
-require_once("config.php");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Fetch all addons
+$sql = "SELECT * FROM BOOKING";
+$result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -19,7 +13,7 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID";
+$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING";
 $total_records_stmt = $conn->prepare($total_records_sql);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
@@ -27,22 +21,22 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM BOOKING LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Bookings</title>
+    <title>View Addon</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+
     <style>
         .container {
             background-color: #fff;
@@ -66,18 +60,18 @@ $result = $stmt->get_result();
         }
 
         .title h1 {
-            color: #000;
-            font-size: 30px;
+            display: inline-block;
             position: relative;
-            margin-left: 10px;
-            text-align: center;
+            font-family: 'Poppins';
+            font-weight: 600;
+            color: #000;
         }
 
         .title h1::after {
             content: '';
             position: absolute;
             left: 0;
-            bottom: -5px;
+            bottom: 0;
             width: 100%;
             height: 5px;
             background: #1A307F;
@@ -170,14 +164,14 @@ $result = $stmt->get_result();
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                            <a class="nav-link" href="viewAddon.php">Addon</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="adminViewSport.php">Sport</a>
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -190,8 +184,10 @@ $result = $stmt->get_result();
 
     <div class="container">
         <div class="title">
-            
-            <h1>All Bookings</h1>
+            <a href="homeAdmin.php" class="back-button">
+                <img src="resource/backButton.svg" alt="Back">
+            </a>
+            <h1>List of Bookings</h1>
         </div>
 
         <div class="content">
@@ -200,9 +196,10 @@ $result = $stmt->get_result();
                     <th>No</th>
                     <th>Booking ID</th>
                     <th>Date</th>
-                    <th>Time Slot</th>
+                    <th>Timeslot</th>
+                    <th>Hours Booked</th>
                     <th>Court</th>
-                    <th>Total Payment</th>
+                    <th>Action</th>
                 </tr>
 
                 <?php
@@ -214,15 +211,20 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['BOOKINGID'] . "</td>";
                         echo "<td>" . $row['BOOKINGDATE'] . "</td>";
                         echo "<td>" . $row['TIMESLOT'] . "</td>";
+                        echo "<td>" . $row['HOURSBOOKED'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>"; // Assuming 'TOTAL' is the column name for total payment
+                ?>
+                        <td>
+                            <a href="adminViewBookingDetail.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a>
+                        </td>
+                        </td>
+                <?php
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
                     echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
-                $conn->close();
                 ?>
             </table>
 
@@ -244,6 +246,8 @@ $result = $stmt->get_result();
             </nav>
         </div>
     </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -148,7 +148,7 @@ $sessionID = $_SESSION['ID'];
             <tr>
                 <td>
                     <div class="check-wrapper">
-                        <form action="validateDetail.php" method="post">
+                        <form action="cusValidateDetail.php" method="post">
                             <div class="input-box">
                                 <label for="sport">Sport</label>
                                 <select id="sport" name="sport" class="form-control" required>

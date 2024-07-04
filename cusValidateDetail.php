@@ -139,7 +139,7 @@ if ($resultSportName->num_rows > 0) {
         </div>
 
         <div class="check-wrapper">
-            <form class="row g-3" action="addOn.php" method="POST">
+            <form class="row g-3" action="cusAddOn.php" method="POST">
                 <div class="col-md-6 input-box">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" value="<?php echo $preCustName; ?>" readonly>
@@ -187,7 +187,7 @@ if ($resultSportName->num_rows > 0) {
                         } else {
                             echo "<option value=''>No options available</option>";
                             echo "<script>alert('No courts available');</script>";
-                            echo "<script>window.location.href='checkTime.php';</script>";
+                            echo "<script>window.location.href='cusCheckTime.php';</script>";
                             exit();
                         }
 

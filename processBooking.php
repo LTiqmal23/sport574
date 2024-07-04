@@ -91,7 +91,7 @@
             // Error inserting booking
             echo "<script>
         alert('Booking error occured.');
-        window.location.href = 'home.php'; // Replace 'nextPage.php' with the desired page
+        window.location.href = 'homeCus.php'; // Replace 'nextPage.php' with the desired page
         </script>";
         }
     } else {

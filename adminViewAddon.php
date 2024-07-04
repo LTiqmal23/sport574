@@ -1,21 +1,61 @@
+<!DOCTYPE html>
 <?php
 session_start();
+require_once('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
-    echo "<script>alert('Log In First');</script>";
-    header("Location: login.php");
-    exit();
+// Handle update of existing addons
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
+    $id = $_POST['updateID'];
+    $name = $_POST['addonName'];
+    $price = $_POST['addonPrice'];
+    $quantity = $_POST['addonQuantity'];
+
+    $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("sdii", $name, $price, $quantity, $id);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>Addon updated successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error updating addon: " . $conn->error . "</div>";
+    }
 }
 
-$sessionID = $_SESSION['ID'];
-$sessionUsername = $_SESSION['username'];
+// Handle deletion of an addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteID'])) {
+    $id = $_POST['deleteID'];
 
-require_once("config.php");
+    $delete_sql = "DELETE FROM ADDON WHERE ADDONID=?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("i", $id);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>Addon deleted successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error deleting addon: " . $conn->error . "</div>";
+    }
 }
+
+// Handle insertion of new addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newAddon'])) {
+    $name = $_POST['newAddonName'];
+    $price = $_POST['newAddonPrice'];
+    $quantity = $_POST['newAddonQuantity'];
+
+    $insert_sql = "INSERT INTO ADDON (ADDONNAME, ADDONPRICE, ADDONQUANTITY) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($insert_sql);
+    $stmt->bind_param("sdi", $name, $price, $quantity);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>New addon inserted successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error inserting addon: " . $conn->error . "</div>";
+    }
+}
+
+// Fetch all addons
+$sql = "SELECT * FROM ADDON";
+$result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -23,31 +63,30 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ?";
+$total_records_sql = "SELECT COUNT(*) as total FROM ADDON";
 $total_records_stmt = $conn->prepare($total_records_sql);
-$total_records_stmt->bind_param("i", $sessionID);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE B.CUSTID = ? LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM ADDON LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Bookings</title>
+    <title>View Addon</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+
     <style>
         .container {
             background-color: #fff;
@@ -166,7 +205,7 @@ $result = $stmt->get_result();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -176,10 +215,13 @@ $result = $stmt->get_result();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -192,21 +234,20 @@ $result = $stmt->get_result();
 
     <div class="container">
         <div class="title">
-            <a href="profile.php" class="back-button">
+            <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>Past Bookings</h1>
+            <h1>List of Addons</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Booking ID</th>
-                    <th>Date</th>
-                    <th>Time Slot</th>
-                    <th>Court</th>
-                    <th>Total Payment</th>
+                    <th>Addon ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
                     <th>Action</th>
                 </tr>
 
@@ -216,13 +257,12 @@ $result = $stmt->get_result();
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['BOOKINGID'] . "</td>";
-                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
-                        echo "<td>" . $row['TIMESLOT'] . "</td>";
-                        echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
+                        echo "<td>" . $row['ADDONID'] . "</td>";
+                        echo "<td>" . $row['ADDONNAME'] . "</td>";
+                        echo "<td>" . $row['ADDONPRICE'] . "</td>";
+                        echo "<td>" . $row['ADDONQUANTITY'] . "</td>";
                 ?>
-                        <td><a href="cusBookingDetails.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
+                        <td><a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">View</a></td>
                         </td>
                 <?php
                         echo "</tr>";
@@ -252,6 +292,8 @@ $result = $stmt->get_result();
             </nav>
         </div>
     </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

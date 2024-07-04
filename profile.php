@@ -183,7 +183,7 @@ $conn->close();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeCus.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -193,7 +193,7 @@ $conn->close();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profile</a>
@@ -213,7 +213,7 @@ $conn->close();
         </div>
 
         <div class="check-wrapper">
-            <form id="profileForm" class="row g-3" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+            <form id="profileForm" class="row g-3" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="col-md-4 input-box">
                     <label for="custid" class="form-label">ID</label>
                     <input type="text" class="form-control" id="custid" name="custid" value="<?php echo htmlspecialchars($sessionID); ?>" readonly>
