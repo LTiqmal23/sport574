@@ -215,7 +215,7 @@ $conn->close();
 
     <div class="check-container">
         <div class="title">
-            <h1>List of Addons</h1>
+            <h1>Profile</h1>
         </div>
 
         <div class="check-wrapper">

@@ -78,8 +78,10 @@
 
             // payment
             // Insert the addon payment
-            $payStmt = $conn->prepare("insert INTO PAYMENT (BOOKINGID, PAYMENTTOTAL) VALUES (?, ?)");
-            $payStmt->bind_param("id", $booking_id, $preTotal);
+            $payStatus = 'PENDING';
+            $payDate = $preDate;
+            $payStmt = $conn->prepare("insert INTO PAYMENT (BOOKINGID, PAYMENTTOTAL, PAYMENTSTATUS, PAYMENTDATE) VALUES (?, ?)");
+            $payStmt->bind_param("idss", $booking_id, $preTotal, $payStatus,);
             $payStmt->execute();
             $payStmt->close();
 
