@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php
 session_start(); // Start the session
 
@@ -34,21 +35,24 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
-// Query to fetch sport details
-$sql = "SELECT SPORTID, SPORTNAME FROM SPORT";
+// Query to fetch sport details along with the total number of courts
+$sql = "select COUNT(FACID) as total, S.SPORTID, S.SPORTNAME 
+        FROM FACILITY F 
+        JOIN SPORT S ON F.SPORTID = S.SPORTID 
+        GROUP BY S.SPORTID, S.SPORTNAME";
 $result = $conn->query($sql);
+
 ?>
 
-
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Bookings</title>
+    <title>View Addon</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+
     <style>
         .container {
             background-color: #fff;
@@ -72,18 +76,18 @@ $result = $conn->query($sql);
         }
 
         .title h1 {
-            color: #000;
-            font-size: 30px;
+            display: inline-block;
             position: relative;
-            margin-left: 10px;
-            text-align: center;
+            font-family: 'Poppins';
+            font-weight: 600;
+            color: #000;
         }
 
         .title h1::after {
             content: '';
             position: absolute;
             left: 0;
-            bottom: -5px;
+            bottom: 0;
             width: 100%;
             height: 5px;
             background: #1A307F;
@@ -168,24 +172,22 @@ $result = $conn->query($sql);
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="homeAdmin.php">
-                    <img src="resource/logo.svg" alt="Logo" width="30" height="24"
-                        class="d-inline-block align-text-top">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="viewAddon.php">Addon</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="viewSport.php">Sport</a>
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -197,44 +199,39 @@ $result = $conn->query($sql);
     </header>
 
     <div class="container">
-    <div class="title">
-        <h1>List of Sports</h1>
-    </div>
+        <div class="title">
+            <a href="homeAdmin.php" class="back-button">
+                <img src="resource/backButton.svg" alt="Back">
+            </a>
+            <h1>List of Sport</h1>
+        </div>
 
-    <div class="content">
-        <table>
-            <tr class="header">
-                <th>No</th>
-                <th>Sport ID</th>
-                <th>Sport Name</th>
-            </tr>
+        <div class="content">
+            <table>
+                <tr class="header">
+                    <th>No</th>
+                    <th>Sport ID</th>
+                    <th>Sport Name</th>
+                    <th>Total Court</th>
+                </tr>
 
-            <?php
-            require_once("config.php");
-
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-
-            // Query to fetch sport details
-            $sql = "SELECT SPORTID, SPORTNAME FROM SPORT";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                $counter = 1;
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr class='info'>";
-                    echo "<td>" . $counter . "</td>";
-                    echo "<td>" . $row['SPORTID'] . "</td>";
-                    echo "<td>" . $row['SPORTNAME'] . "</td>";
-                    echo "</tr>";
-                    $counter++;
+                <?php
+                if ($result->num_rows > 0) {
+                    $counter = 1;
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr class='info'>";
+                        echo "<td>" . $counter . "</td>";
+                        echo "<td>" . $row['SPORTID'] . "</td>";
+                        echo "<td>" . $row['SPORTNAME'] . "</td>";
+                        echo "<td>" . $row['total'] . "</td>";
+                        echo "</tr>";
+                        $counter++;
+                    }
+                } else {
+                    echo "<tr><td colspan='4'>No sports found</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='3'>No sports found</td></tr>";
-            }
-            $conn->close();
-            ?>
+                $conn->close();
+                ?>
             </table>
 
             <!-- Pagination controls -->
@@ -244,11 +241,11 @@ $result = $conn->query($sql);
                         <a class="page-link" href="?page=<?php echo $page - 1; ?>">Previous</a>
                     </li>
                     <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
-                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
-                        <a class="page-link" href="?page=<?php echo $i; ?>">
-                            <?php echo $i; ?>
-                        </a>
-                    </li>
+                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>">
+                                <?php echo $i; ?>
+                            </a>
+                        </li>
                     <?php } ?>
                     <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
                         <a class="page-link" href="?page=<?php echo $page + 1; ?>">Next</a>
@@ -257,6 +254,9 @@ $result = $conn->query($sql);
             </nav>
         </div>
     </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

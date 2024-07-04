@@ -171,6 +171,7 @@ if ($resultSportName->num_rows > 0) {
                     AND b.BOOKINGDATE = ? 
                     AND b.TIMESLOT = ?
                     WHERE f.SPORTID = ? 
+                    AND f.FACSTATUS = 'RUNNING'
                     AND b.FACID IS NULL
                 ");
 

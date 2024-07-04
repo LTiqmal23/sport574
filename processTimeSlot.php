@@ -16,6 +16,7 @@
             AND b.BOOKINGDATE = ? 
             AND b.TIMESLOT = ?
             WHERE f.SPORTID = ? 
+            AND FACSTATUS = 'RUNNING'
             AND b.FACID IS NULL
         ");
 

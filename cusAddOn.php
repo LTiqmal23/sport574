@@ -122,194 +122,194 @@ include "config.php";
 
 <body>
     <header>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="homeCus.php">
-                        <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                        SPORTFUSION
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="cusCheckTime.php">Book</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="profile.php">Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="logout.php">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="homeCus.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.php">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    </ul>
                 </div>
-            </nav>
-        </header>
-
-        <div class="check-container">
-            <div class="check-header">
-                <h1>Choose Time and Date</h1>
             </div>
+        </nav>
+    </header>
 
-
-            <table class="content">
-                <tr>
-                    <td>
-                        <div class="check-wrapper">
-                            <form id="addonForm" action="processBooking.php" method="post">
-                                <div class="input-box">
-                                    <!-- hidden input -->
-                                    <input type="hidden" id="court" name="court" value="<?php echo $preCourtID; ?>">
-                                    <input type="hidden" id="hoursbooked" name="hoursbooked" value="<?php echo $preHoursBooked; ?>">
-                                    <input type="hidden" id="timeslot" name="timeslot" value="<?php echo $preTimeSlot; ?>">
-                                    <input type="hidden" id="bookingdate" name="bookingdate" value="<?php echo $preDate; ?>">
-
-                                    <!-- display -->
-                                    <?php
-                                    include "config.php";
-                                    $sql = "SELECT ADDONID, ADDONNAME, ADDONPRICE FROM ADDON";
-                                    $result = $conn->query($sql);
-
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<div class='addon-item'>";
-                                            echo "<label>" . $row['ADDONNAME'] . " (RM" . $row['ADDONPRICE'] . ")</label>";
-                                            echo "<input type='number' class='form-control addon-quantity' data-id='" . $row['ADDONID'] . "' data-name='" . $row['ADDONNAME'] . "' data-price='" . $row['ADDONPRICE'] . "' id='quantity_" . $row['ADDONID'] . "' name='quantity[" . $row['ADDONID'] . "]' min='0'>";
-                                            echo "</div>";
-                                        }
-                                    } else {
-                                        echo "<p>No options available</p>";
-                                    }
-                                    ?>
-                                </div>
-
-                                <div class="input-box d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-success">Proceed Booking</button>
-                                </div>
-
-                                <input type="hidden" id="total" name="total">
-                            </form>
-                        </div>
-                    </td>
-
-                    <td class="center-cell">
-                        <div class="check-table">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="priceTable">
-                                    <?php
-                                    include "config.php";
-                                    $hoursBooked = $preHoursBooked; // Example hours booked, replace with your logic
-
-                                    // Prepare the SQL query to fetch court information based on FACID
-                                    $sqlSportName = "SELECT * FROM FACILITY WHERE FACID = ?";
-                                    $stmt = $conn->prepare($sqlSportName);
-                                    $stmt->bind_param("i", $preCourtID);
-                                    $stmt->execute();
-                                    $resultCourt = $stmt->get_result();
-
-                                    if ($resultCourt->num_rows > 0) {
-                                        // Fetch the single result
-                                        $row = $resultCourt->fetch_assoc();
-                                        $facPrice = $row['FACPRICEPERHOUR'];
-                                        $courtTotal = $facPrice * $hoursBooked;
-
-                                        // Display the court information only once
-                                        echo "<tr id='courtRow'>";
-                                        echo "<td>Court " . htmlspecialchars($preCourtID) . "</td>";
-                                        echo "<td>RM" . number_format($facPrice, 2) . "</td>";
-                                        echo "<td>" . htmlspecialchars($hoursBooked) . "</td>";
-                                        echo "<td>RM" . number_format($courtTotal, 2) . "</td>";
-                                        echo "</tr>";
-                                    } else {
-                                        echo "<script>alert('No court available');</script>";
-                                    }
-
-                                    // Close the prepared statement and database connection
-                                    $stmt->close();
-                                    ?>
-                                    <!-- Grand Total row -->
-                                    <tr id="grandTotalRow">
-                                        <td colspan="3"><strong>Grand Total</strong></td>
-                                        <td id="grandTotal">RM0.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-
+    <div class="check-container">
+        <div class="check-header">
+            <h1>Choose Time and Date</h1>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Function to calculate the grand total
-                function calculateGrandTotal() {
-                    let grandTotal = 0;
 
-                    // Get the court total
-                    const courtRow = document.getElementById('courtRow');
-                    const courtTotal = parseFloat(courtRow.querySelector('td:nth-child(4)').textContent.replace('RM', ''));
-                    grandTotal += courtTotal;
 
-                    // Clear previous addon rows
-                    const addonRows = document.querySelectorAll('.addon-row');
-                    addonRows.forEach(function(row) {
-                        row.remove();
-                    });
+        <table class="content">
+            <tr>
+                <td>
+                    <div class="check-wrapper">
+                        <form id="addonForm" action="processBooking.php" method="post">
+                            <div class="input-box">
+                                <!-- hidden input -->
+                                <input type="hidden" id="court" name="court" value="<?php echo $preCourtID; ?>">
+                                <input type="hidden" id="hoursbooked" name="hoursbooked" value="<?php echo $preHoursBooked; ?>">
+                                <input type="hidden" id="timeslot" name="timeslot" value="<?php echo $preTimeSlot; ?>">
+                                <input type="hidden" id="bookingdate" name="bookingdate" value="<?php echo $preDate; ?>">
 
-                    // Get addon totals and add rows for each addon
-                    const addonQuantities = document.querySelectorAll('.addon-quantity');
-                    addonQuantities.forEach(function(input) {
-                        const price = parseFloat(input.getAttribute('data-price'));
-                        const quantity = parseInt(input.value) || 0;
-                        if (quantity > 0) {
-                            const total = price * quantity;
+                                <!-- display -->
+                                <?php
+                                include "config.php";
+                                $sql = "SELECT ADDONID, ADDONNAME, ADDONPRICE FROM ADDON";
+                                $result = $conn->query($sql);
 
-                            // Create a new row for the addon
-                            const newRow = document.createElement('tr');
-                            newRow.classList.add('addon-row');
-                            newRow.innerHTML = `
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<div class='addon-item'>";
+                                        echo "<label>" . $row['ADDONNAME'] . " (RM" . $row['ADDONPRICE'] . ")</label>";
+                                        echo "<input type='number' class='form-control addon-quantity' data-id='" . $row['ADDONID'] . "' data-name='" . $row['ADDONNAME'] . "' data-price='" . $row['ADDONPRICE'] . "' id='quantity_" . $row['ADDONID'] . "' name='quantity[" . $row['ADDONID'] . "]' min='0'>";
+                                        echo "</div>";
+                                    }
+                                } else {
+                                    echo "<p>No options available</p>";
+                                }
+                                ?>
+                            </div>
+
+                            <div class="input-box d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-success">Proceed Booking</button>
+                                <a href="homeCus.php" class="btn btn-danger ml-3">Cancel</a>
+                            </div>
+
+                            <input type="hidden" id="total" name="total">
+                        </form>
+                    </div>
+                </td>
+
+                <td class="center-cell">
+                    <div class="check-table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="priceTable">
+                                <?php
+                                include "config.php";
+                                $hoursBooked = $preHoursBooked; // Example hours booked, replace with your logic
+
+                                // Prepare the SQL query to fetch court information based on FACID
+                                $sqlSportName = "SELECT * FROM FACILITY WHERE FACID = ?";
+                                $stmt = $conn->prepare($sqlSportName);
+                                $stmt->bind_param("i", $preCourtID);
+                                $stmt->execute();
+                                $resultCourt = $stmt->get_result();
+
+                                if ($resultCourt->num_rows > 0) {
+                                    // Fetch the single result
+                                    $row = $resultCourt->fetch_assoc();
+                                    $facPrice = $row['FACPRICEPERHOUR'];
+                                    $courtTotal = $facPrice * $hoursBooked;
+
+                                    // Display the court information only once
+                                    echo "<tr id='courtRow'>";
+                                    echo "<td>Court " . htmlspecialchars($preCourtID) . "</td>";
+                                    echo "<td>RM" . number_format($facPrice, 2) . "</td>";
+                                    echo "<td>" . htmlspecialchars($hoursBooked) . "</td>";
+                                    echo "<td>RM" . number_format($courtTotal, 2) . "</td>";
+                                    echo "</tr>";
+                                } else {
+                                    echo "<script>alert('No court available');</script>";
+                                }
+
+                                // Close the prepared statement and database connection
+                                $stmt->close();
+                                ?>
+                                <!-- Grand Total row -->
+                                <tr id="grandTotalRow">
+                                    <td colspan="3"><strong>Grand Total</strong></td>
+                                    <td id="grandTotal">RM0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to calculate the grand total
+            function calculateGrandTotal() {
+                let grandTotal = 0;
+
+                // Get the court total
+                const courtRow = document.getElementById('courtRow');
+                const courtTotal = parseFloat(courtRow.querySelector('td:nth-child(4)').textContent.replace('RM', ''));
+                grandTotal += courtTotal;
+
+                // Clear previous addon rows
+                const addonRows = document.querySelectorAll('.addon-row');
+                addonRows.forEach(function(row) {
+                    row.remove();
+                });
+
+                // Get addon totals and add rows for each addon
+                const addonQuantities = document.querySelectorAll('.addon-quantity');
+                addonQuantities.forEach(function(input) {
+                    const price = parseFloat(input.getAttribute('data-price'));
+                    const quantity = parseInt(input.value) || 0;
+                    if (quantity > 0) {
+                        const total = price * quantity;
+
+                        // Create a new row for the addon
+                        const newRow = document.createElement('tr');
+                        newRow.classList.add('addon-row');
+                        newRow.innerHTML = `
                     <td>${input.getAttribute('data-name')}</td>
                     <td>RM${price.toFixed(2)}</td>
                     <td>${quantity}</td>
                     <td>RM${total.toFixed(2)}</td>
                 `;
 
-                            // Insert the new row before the grand total row
-                            document.getElementById('grandTotalRow').before(newRow);
+                        // Insert the new row before the grand total row
+                        document.getElementById('grandTotalRow').before(newRow);
 
-                            grandTotal += total;
-                        }
-                    });
-
-                    // Update the grand total in the table
-                    document.getElementById('grandTotal').textContent = 'RM' + grandTotal.toFixed(2);
-                    document.getElementById('total').value = grandTotal.toFixed(2);
-                }
-
-                // Add event listeners to the addon quantity inputs
-                const addonQuantities = document.querySelectorAll('.addon-quantity');
-                addonQuantities.forEach(function(input) {
-                    input.addEventListener('input', calculateGrandTotal);
+                        grandTotal += total;
+                    }
                 });
 
-                // Initial calculation of grand total
-                calculateGrandTotal();
+                // Update the grand total in the table
+                document.getElementById('grandTotal').textContent = 'RM' + grandTotal.toFixed(2);
+                document.getElementById('total').value = grandTotal.toFixed(2);
+            }
+
+            // Add event listeners to the addon quantity inputs
+            const addonQuantities = document.querySelectorAll('.addon-quantity');
+            addonQuantities.forEach(function(input) {
+                input.addEventListener('input', calculateGrandTotal);
             });
-        </script>
+
+            // Initial calculation of grand total
+            calculateGrandTotal();
+        });
+    </script>
 </body>
 
 </html>

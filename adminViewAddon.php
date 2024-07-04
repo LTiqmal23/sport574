@@ -221,7 +221,7 @@ $result = $stmt->get_result();
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="viewSport.php">Sport</a>
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -248,7 +248,7 @@ $result = $stmt->get_result();
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Action</th>
+                    <th colspan="2">Action</th>
                 </tr>
 
                 <?php
@@ -262,7 +262,11 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['ADDONPRICE'] . "</td>";
                         echo "<td>" . $row['ADDONQUANTITY'] . "</td>";
                 ?>
-                        <td><a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a></td>
+                        <td>
+                            <a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a>
+                            <a href="processDeleteAddon.php?deleteID=<?php echo $row['ADDONID']; ?>" class="btn btn-danger">Delete</a>
+                        </td>
+
                         </td>
                 <?php
                         echo "</tr>";
@@ -273,6 +277,7 @@ $result = $stmt->get_result();
                 }
                 ?>
             </table>
+
 
             <!-- Pagination controls -->
             <nav aria-label="Page navigation">
@@ -290,6 +295,10 @@ $result = $stmt->get_result();
                     </li>
                 </ul>
             </nav>
+
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-success" type="button" href="adminAddAddon.php">Add New Addon</a>
+            </div>
         </div>
     </div>
 

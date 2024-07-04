@@ -81,7 +81,7 @@ $sessionID = $_SESSION['ID'];
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="viewSport.php">Sport</a>
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>

@@ -11,6 +11,7 @@ if (isset($_POST['sport']) && isset($_POST['date'])) {
     FROM facility f 
     LEFT JOIN booking b ON f.FACID = b.FACID AND b.BOOKINGDATE = ? 
     WHERE f.SPORTID = ? 
+    AND FACSTATUS = 'RUNNING'
     AND b.FACID IS NULL");
 
     $stmt->bind_param("ss", $selectedDate, $sportId);
