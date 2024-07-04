@@ -19,20 +19,26 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID";
+$total_records_sql = "SELECT COUNT(*) as total FROM SPORT";
 $total_records_stmt = $conn->prepare($total_records_sql);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-// Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID LIMIT ? OFFSET ?";
+// Query to fetch sport details with pagination
+$sql = "SELECT SPORTID, SPORTNAME FROM SPORT LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
+
+
+// Query to fetch sport details
+$sql = "SELECT SPORTID, SPORTNAME FROM SPORT";
+$result = $conn->query($sql);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -162,22 +168,24 @@ $result = $stmt->get_result();
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="homeAdmin.php">
-                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24"
+                        class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="viewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="adminViewBooking.php">Booking</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="adminViewSport.php">Sport</a>
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -189,41 +197,44 @@ $result = $stmt->get_result();
     </header>
 
     <div class="container">
-        <div class="title">
-            
-            <h1>All Bookings</h1>
-        </div>
+    <div class="title">
+        <h1>List of Sports</h1>
+    </div>
 
-        <div class="content">
-            <table>
-                <tr class="header">
-                    <th>No</th>
-                    <th>Booking ID</th>
-                    <th>Date</th>
-                    <th>Time Slot</th>
-                    <th>Court</th>
-                    <th>Total Payment</th>
-                </tr>
+    <div class="content">
+        <table>
+            <tr class="header">
+                <th>No</th>
+                <th>Sport ID</th>
+                <th>Sport Name</th>
+            </tr>
 
-                <?php
-                if ($result->num_rows > 0) {
-                    $counter = 1 + $offset;
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr class='info'>";
-                        echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['BOOKINGID'] . "</td>";
-                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
-                        echo "<td>" . $row['TIMESLOT'] . "</td>";
-                        echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>"; // Assuming 'TOTAL' is the column name for total payment
-                        echo "</tr>";
-                        $counter++;
-                    }
-                } else {
-                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
+            <?php
+            require_once("config.php");
+
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            // Query to fetch sport details
+            $sql = "SELECT SPORTID, SPORTNAME FROM SPORT";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                $counter = 1;
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr class='info'>";
+                    echo "<td>" . $counter . "</td>";
+                    echo "<td>" . $row['SPORTID'] . "</td>";
+                    echo "<td>" . $row['SPORTNAME'] . "</td>";
+                    echo "</tr>";
+                    $counter++;
                 }
-                $conn->close();
-                ?>
+            } else {
+                echo "<tr><td colspan='3'>No sports found</td></tr>";
+            }
+            $conn->close();
+            ?>
             </table>
 
             <!-- Pagination controls -->
@@ -233,9 +244,11 @@ $result = $stmt->get_result();
                         <a class="page-link" href="?page=<?php echo $page - 1; ?>">Previous</a>
                     </li>
                     <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
-                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
+                    <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    </li>
                     <?php } ?>
                     <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
                         <a class="page-link" href="?page=<?php echo $page + 1; ?>">Next</a>
