@@ -239,7 +239,7 @@ $viewID = $_GET["viewID"];
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeCus.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -249,7 +249,7 @@ $viewID = $_GET["viewID"];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profile</a>
@@ -335,12 +335,12 @@ $viewID = $_GET["viewID"];
 
                         <div class="table-container2">
                             <?php
-                            $sqlPayment = "SELECT B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, AD.ADDONPRICE, AD.ADDONNAME 
-                   FROM booking B 
-                   JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
-                   JOIN FACILITY F ON B.FACID = F.FACID 
-                   JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
-                   WHERE B.BOOKINGID = ?";
+                            $sqlPayment = "select B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
+                            FROM booking B 
+                            JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
+                            JOIN FACILITY F ON B.FACID = F.FACID 
+                            JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
+                            WHERE B.BOOKINGID = ?";
                             $stmtPayment = $conn->prepare($sqlPayment);
 
                             if ($stmtPayment) {
@@ -382,7 +382,7 @@ $viewID = $_GET["viewID"];
                                                 // Display add-on details
                                                 do {
                                                     $addonName = $row["ADDONNAME"];
-                                                    $addonPrice = $row["ADDONPRICE"];
+                                                    $addonPrice = $row["PRICE"];
                                                     $addonQuantity = $row["QUANTITY"];
                                                     $addonTotal = $addonPrice * $addonQuantity;
                                                     $totalAmount += $addonTotal;

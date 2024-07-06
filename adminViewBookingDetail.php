@@ -338,7 +338,7 @@ $viewID = $_GET["viewID"];
 
                         <div class="table-container2">
                             <?php
-                            $sqlPayment = "SELECT B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, AD.ADDONPRICE, AD.ADDONNAME 
+                            $sqlPayment = "SELECT B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
                    FROM booking B 
                    JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
                    JOIN FACILITY F ON B.FACID = F.FACID 
@@ -385,7 +385,7 @@ $viewID = $_GET["viewID"];
                                                 // Display add-on details
                                                 do {
                                                     $addonName = $row["ADDONNAME"];
-                                                    $addonPrice = $row["ADDONPRICE"];
+                                                    $addonPrice = $row["PRICE"];
                                                     $addonQuantity = $row["QUANTITY"];
                                                     $addonTotal = $addonPrice * $addonQuantity;
                                                     $totalAmount += $addonTotal;
