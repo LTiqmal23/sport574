@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 04, 2024 at 04:37 PM
+-- Generation Time: Jul 06, 2024 at 02:20 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -39,8 +39,8 @@ CREATE TABLE `addon` (
 --
 
 INSERT INTO `addon` (`ADDONID`, `ADDONNAME`, `ADDONPRICE`, `ADDONQUANTITY`) VALUES
-(301, '100 PLUS', 2.40, 397),
-(302, 'EXTRAJOSS', 2.00, 197),
+(301, '100 PLUS', 3.00, 395),
+(302, 'EXTRAJOSS', 2.00, 196),
 (303, 'ENERGY GEl', 5.00, 197),
 (304, 'MINERAL WATER', 1.00, 197);
 
@@ -89,7 +89,8 @@ INSERT INTO `booking` (`BOOKINGID`, `BOOKINGDATE`, `TIMESLOT`, `HOURSBOOKED`, `A
 (100100, '2024-06-01', '1400H-500H', '1', 20241, 'F1', 101),
 (100101, '2024-06-01', '1800H-1900H', '1', 20241, 'F3', 101),
 (100102, '2024-06-01', '1800H-1900H', '1', 20241, 'F3', 101),
-(100103, '2024-06-01', '1800H-1900H', '1', 20241, 'F3', 101);
+(100103, '2024-06-01', '1800H-1900H', '1', 20241, 'F3', 101),
+(100104, '2024-07-13', '1900H-2000H', '1', 20241, 'F1', 101);
 
 -- --------------------------------------------------------
 
@@ -100,6 +101,7 @@ INSERT INTO `booking` (`BOOKINGID`, `BOOKINGDATE`, `TIMESLOT`, `HOURSBOOKED`, `A
 CREATE TABLE `booking_addon` (
   `BOOKINGID` int NOT NULL,
   `ADDONID` int NOT NULL,
+  `PRICE` decimal(10,2) NOT NULL,
   `QUANTITY` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -107,21 +109,23 @@ CREATE TABLE `booking_addon` (
 -- Dumping data for table `booking_addon`
 --
 
-INSERT INTO `booking_addon` (`BOOKINGID`, `ADDONID`, `QUANTITY`) VALUES
-(100100, 301, 3),
-(100100, 302, 10),
-(100101, 301, 1),
-(100101, 302, 1),
-(100101, 303, 1),
-(100101, 304, 1),
-(100102, 301, 1),
-(100102, 302, 1),
-(100102, 303, 1),
-(100102, 304, 1),
-(100103, 301, 1),
-(100103, 302, 1),
-(100103, 303, 1),
-(100103, 304, 1);
+INSERT INTO `booking_addon` (`BOOKINGID`, `ADDONID`, `PRICE`, `QUANTITY`) VALUES
+(100100, 301, 2.40, 3),
+(100100, 302, 2.00, 10),
+(100101, 301, 2.40, 1),
+(100101, 302, 2.00, 1),
+(100101, 303, 5.00, 1),
+(100101, 304, 1.00, 1),
+(100102, 301, 2.40, 1),
+(100102, 302, 2.00, 1),
+(100102, 303, 5.00, 1),
+(100102, 304, 1.00, 1),
+(100103, 301, 2.40, 1),
+(100103, 302, 2.00, 1),
+(100103, 303, 5.00, 1),
+(100103, 304, 1.00, 1),
+(100104, 301, 3.00, 2),
+(100104, 302, 2.00, 1);
 
 -- --------------------------------------------------------
 
@@ -188,7 +192,8 @@ CREATE TABLE `payment` (
 
 INSERT INTO `payment` (`PAYMENTID`, `PAYMENTTOTAL`, `PAYMENTSTATUS`, `PAYMENTDATE`, `BOOKINGID`) VALUES
 (300300, 129.60, 'PAID', '2024-06-01', 100100),
-(300301, 110.40, 'PENDING', '2024-06-01', 100103);
+(300301, 110.40, 'PENDING', '2024-06-01', 100103),
+(300302, 108.00, 'PENDING', '2024-07-13', 100104);
 
 -- --------------------------------------------------------
 
@@ -283,7 +288,7 @@ ALTER TABLE `addon`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `BOOKINGID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100104;
+  MODIFY `BOOKINGID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100105;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -295,7 +300,7 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `PAYMENTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300302;
+  MODIFY `PAYMENTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300303;
 
 --
 -- AUTO_INCREMENT for table `sport`
