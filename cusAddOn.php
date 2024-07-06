@@ -25,7 +25,7 @@ include "config.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Time</title>
+    <title>Add On</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="js/bootstrap.bundle.min.js"></script>
@@ -124,7 +124,7 @@ include "config.php";
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeCus.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -134,7 +134,7 @@ include "config.php";
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profile</a>
@@ -185,8 +185,9 @@ include "config.php";
                                 ?>
                             </div>
 
-                            <div class="input-box d-flex justify-content-center">
+                            <div class="input-box d-flex justify-content-center gap-2">
                                 <button type="submit" class="btn btn-success">Proceed Booking</button>
+                                <a href="homeCus.php" class="btn btn-danger ml-3">Cancel</a>
                             </div>
 
                             <input type="hidden" id="total" name="total">

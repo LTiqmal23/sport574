@@ -3,8 +3,58 @@
 session_start();
 require_once('config.php');
 
+// Handle update of existing addons
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['updateID'])) {
+    $id = $_POST['updateID'];
+    $name = $_POST['addonName'];
+    $price = $_POST['addonPrice'];
+    $quantity = $_POST['addonQuantity'];
+
+    $update_sql = "UPDATE ADDON SET ADDONNAME=?, ADDONPRICE=?, ADDONQUANTITY=? WHERE ADDONID=?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("sdii", $name, $price, $quantity, $id);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>Addon updated successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error updating addon: " . $conn->error . "</div>";
+    }
+}
+
+// Handle deletion of an addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteID'])) {
+    $id = $_POST['deleteID'];
+
+    $delete_sql = "DELETE FROM ADDON WHERE ADDONID=?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>Addon deleted successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error deleting addon: " . $conn->error . "</div>";
+    }
+}
+
+// Handle insertion of new addon
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newAddon'])) {
+    $name = $_POST['newAddonName'];
+    $price = $_POST['newAddonPrice'];
+    $quantity = $_POST['newAddonQuantity'];
+
+    $insert_sql = "INSERT INTO ADDON (ADDONNAME, ADDONPRICE, ADDONQUANTITY) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($insert_sql);
+    $stmt->bind_param("sdi", $name, $price, $quantity);
+
+    if ($stmt->execute()) {
+        echo "<div class='alert alert-success'>New addon inserted successfully.</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Error inserting addon: " . $conn->error . "</div>";
+    }
+}
+
 // Fetch all addons
-$sql = "SELECT * FROM BOOKING";
+$sql = "SELECT * FROM ADDON";
 $result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
@@ -13,7 +63,7 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING";
+$total_records_sql = "SELECT COUNT(*) as total FROM ADDON";
 $total_records_stmt = $conn->prepare($total_records_sql);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
@@ -21,7 +71,7 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT * FROM BOOKING LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM ADDON LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
@@ -187,19 +237,18 @@ $result = $stmt->get_result();
             <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>List of Bookings</h1>
+            <h1>List of Addons</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Booking ID</th>
-                    <th>Date</th>
-                    <th>Timeslot</th>
-                    <th>Hours Booked</th>
-                    <th>Court</th>
-                    <th>Action</th>
+                    <th>Addon ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th colspan="2">Action</th>
                 </tr>
 
                 <?php
@@ -208,15 +257,16 @@ $result = $stmt->get_result();
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['BOOKINGID'] . "</td>";
-                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
-                        echo "<td>" . $row['TIMESLOT'] . "</td>";
-                        echo "<td>" . $row['HOURSBOOKED'] . "</td>";
-                        echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td>" . $row['ADDONID'] . "</td>";
+                        echo "<td>" . $row['ADDONNAME'] . "</td>";
+                        echo "<td>" . $row['ADDONPRICE'] . "</td>";
+                        echo "<td>" . $row['ADDONQUANTITY'] . "</td>";
                 ?>
                         <td>
-                            <a href="adminViewBookingDetail.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a>
+                            <a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a>
+                            <a href="processDeleteAddon.php?deleteID=<?php echo $row['ADDONID']; ?>" class="btn btn-danger">Delete</a>
                         </td>
+
                         </td>
                 <?php
                         echo "</tr>";
@@ -227,6 +277,7 @@ $result = $stmt->get_result();
                 }
                 ?>
             </table>
+
 
             <!-- Pagination controls -->
             <nav aria-label="Page navigation">
@@ -244,6 +295,10 @@ $result = $stmt->get_result();
                     </li>
                 </ul>
             </nav>
+
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-success" type="button" href="adminAddAddon.php">Add New Addon</a>
+            </div>
         </div>
     </div>
 

@@ -9,53 +9,26 @@ if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
 }
 
 $sessionID = $_SESSION['ID'];
-$sessionUsername = $_SESSION['username'];
+$editID = $_GET['editID'];
 
 include "config.php";
 
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateProfile'])) {
-    $newName = trim($_POST['name']);
-    $newAddress = trim($_POST['address']);
-    $newPhone = trim($_POST['phone']);
-
-    // Validate the input
-    if (empty($newName)) {
-        echo "<script>alert('Name cannot be empty');</script>";
-    } else {
-        // Update the database
-        $updateSql = "UPDATE CUSTOMER SET CUSTNAME = ?, CUSTADDRESS = ?, CUSTPHONE = ? WHERE CUSTID = ?";
-        if ($updateStmt = $conn->prepare($updateSql)) {
-            $updateStmt->bind_param("sssi", $newName, $newAddress, $newPhone, $sessionID);
-
-            if ($updateStmt->execute()) {
-                echo "<script>alert('Profile updated successfully!');</script>";
-            } else {
-                echo "<script>alert('Error updating profile. Please try again.');</script>";
-            }
-
-            $updateStmt->close();
-        } else {
-            echo "<script>alert('Error preparing statement.');</script>";
-        }
-    }
-}
-
-// Fetch customer data
-$sql = "SELECT * FROM CUSTOMER WHERE CUSTID = ?";
+// Fetch addon data
+$sql = "SELECT * FROM ADDON WHERE ADDONID = ?";
 if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("i", $sessionID);
+    $stmt->bind_param("i", $editID);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $customerData = $result->fetch_assoc();
+        $editData = $result->fetch_assoc();
     } else {
-        $customerData = [
-            'CUSTNAME' => '',
-            'CUSTADDRESS' => '',
-            'CUSTPHONE' => '',
-            'USERNAME' => $sessionUsername
+        echo "<script>alert('No Addon Found');</script>";
+        $editData = [
+            'ADDONNAME' => '',
+            'ADDONPRICE' => '',
+            'ADDONQUANTITY' => '',
+            'ADDONID' => $editID
         ];
     }
     $stmt->close();
@@ -65,6 +38,7 @@ if ($stmt = $conn->prepare($sql)) {
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -215,37 +189,26 @@ $conn->close();
 
     <div class="check-container">
         <div class="title">
-            <h1>Profile</h1>
+            <h1>Edit Addon</h1>
         </div>
 
         <div class="check-wrapper">
-            <form id="profileForm" class="row g-3" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+            <form class="row g-3" action="updateAddon.php" method="POST">
                 <div class="col-md-4 input-box">
-                    <label for="custid" class="form-label">ID</label>
-                    <input type="text" class="form-control" id="custid" name="custid" value="<?php echo htmlspecialchars($sessionID); ?>" readonly>
-                </div>
-                <div class="col-md-4 input-box">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($customerData['USERNAME']); ?>" readonly>
+                    <input type="hidden" class="form-control" id="id" name="id" value="<?php echo $editID; ?>">
+                    <label for="name">Addon Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($editData['ADDONNAME']); ?>" required>
                 </div>
                 <div class="col-md-4 input-box">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($customerData['CUSTNAME']); ?>" placeholder="Enter your name">
+                    <label for="price">Price</label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($editData['ADDONPRICE']); ?>" required>
                 </div>
-                <div class="col-md-12 input-box">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" value="<?php echo htmlspecialchars($customerData['CUSTADDRESS']); ?>" placeholder="Enter your address">
-                </div>
-                <div class="col-md-12 input-box">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($customerData['CUSTPHONE']); ?>" placeholder="Enter your phone number">
+                <div class="col-md-4 input-box">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo htmlspecialchars($editData['ADDONQUANTITY']); ?>" required>
                 </div>
                 <div class="action-buttons">
-                    <a href="cusPastBooking.php" class="action-button">
-                        <img src="resource/book.png" alt="View Past Booking">
-                        <span class="action-label">View Past Booking</span>
-                    </a>
-                    <button type="submit" class="submit-button" name="updateProfile">Update Profile</button>
+                    <button type="submit" class="submit-button" name="updateProfile">Update Addon</button>
                 </div>
             </form>
         </div>

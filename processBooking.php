@@ -46,7 +46,7 @@
                 foreach ($_POST['quantity'] as $addonID => $quantity) {
                     if ($quantity > 0) {
                         // Fetch current quantity of the addon
-                        $inventoryStmt = $conn->prepare("select ADDONQUANTITY FROM ADDON WHERE ADDONID = ?");
+                        $inventoryStmt = $conn->prepare("SELECT ADDONQUANTITY FROM ADDON WHERE ADDONID = ?");
                         $inventoryStmt->bind_param("i", $addonID);
                         $inventoryStmt->execute();
                         $result = $inventoryStmt->get_result();
@@ -58,18 +58,27 @@
                             $newQuantity = $currentQuantity - $quantity;
 
                             // Update the addon quantity
-                            $quantityStmt = $conn->prepare("
-                            UPDATE ADDON SET ADDONQUANTITY = ? WHERE ADDONID = ?");
+                            $quantityStmt = $conn->prepare("UPDATE ADDON SET ADDONQUANTITY = ? WHERE ADDONID = ?");
                             $quantityStmt->bind_param("ii", $newQuantity, $addonID);
                             $quantityStmt->execute();
                             $quantityStmt->close();
 
-                            // Insert the addon booking details
-                            $addonStmt = $conn->prepare("
-                            INSERT INTO booking_addon (BOOKINGID, ADDONID, QUANTITY) VALUES (?, ?, ?)");
-                            $addonStmt->bind_param("iii", $booking_id, $addonID, $quantity);
-                            $addonStmt->execute();
-                            $addonStmt->close();
+                            // Fetch price from ADDON
+                            $getPriceStmt = $conn->prepare("SELECT ADDONPRICE FROM ADDON WHERE ADDONID = ?");
+                            $getPriceStmt->bind_param("i", $addonID);
+                            $getPriceStmt->execute();
+                            $getPriceResult = $getPriceStmt->get_result();
+                            if ($getPriceResult->num_rows > 0) {
+                                $priceRow = $getPriceResult->fetch_assoc();
+                                $price = $priceRow['ADDONPRICE'];
+
+                                // Insert the addon booking details
+                                $addonStmt = $conn->prepare("INSERT INTO BOOKING_ADDON (BOOKINGID, ADDONID, PRICE, QUANTITY) VALUES (?, ?, ?, ?)");
+                                $addonStmt->bind_param("iidi", $booking_id, $addonID, $price, $quantity);
+                                $addonStmt->execute();
+                                $addonStmt->close();
+                            }
+                            $getPriceStmt->close();
                         }
                         $inventoryStmt->close();
                     }
@@ -78,8 +87,10 @@
 
             // payment
             // Insert the addon payment
-            $payStmt = $conn->prepare("insert INTO PAYMENT (BOOKINGID, PAYMENTTOTAL) VALUES (?, ?)");
-            $payStmt->bind_param("id", $booking_id, $preTotal);
+            $payStatus = 'PENDING';
+            $payDate = $preDate;
+            $payStmt = $conn->prepare("insert INTO PAYMENT (BOOKINGID, PAYMENTTOTAL, PAYMENTSTATUS, PAYMENTDATE) VALUES (?, ?, ?, ?)");
+            $payStmt->bind_param("idss", $booking_id, $preTotal, $payStatus, $payDate);
             $payStmt->execute();
             $payStmt->close();
 
@@ -91,7 +102,7 @@
             // Error inserting booking
             echo "<script>
         alert('Booking error occured.');
-        window.location.href = 'home.php'; // Replace 'nextPage.php' with the desired page
+        window.location.href = 'homeCus.php'; // Replace 'nextPage.php' with the desired page
         </script>";
         }
     } else {

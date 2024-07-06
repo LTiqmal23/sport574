@@ -4,7 +4,7 @@ session_start();
 require_once('config.php');
 
 // Fetch all addons
-$sql = "SELECT * FROM BOOKING";
+$sql = "select * FROM payment";
 $result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
@@ -21,7 +21,12 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT * FROM BOOKING LIMIT ? OFFSET ?";
+$sql = "select B.*, P.*, C.* 
+        FROM BOOKING B 
+        JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID
+        JOIN CUSTOMER C ON B.CUSTID = C.CUSTID
+        ORDER BY P.PAYMENTID DESC
+        LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
@@ -40,7 +45,7 @@ $result = $stmt->get_result();
     <style>
         .container {
             background-color: #fff;
-            width: 80%;
+            width: 90%;
             margin: 20px auto;
             border-radius: 15px;
             padding: 20px;
@@ -83,7 +88,7 @@ $result = $stmt->get_result();
         }
 
         .content table {
-            width: 80%;
+            width: 90%;
             text-align: center;
             margin: 0 auto;
             padding: 10px;
@@ -187,18 +192,20 @@ $result = $stmt->get_result();
             <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>List of Bookings</h1>
+            <h1>List of Payments</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Booking ID</th>
+                    <th>Payment ID</th>
                     <th>Date</th>
-                    <th>Timeslot</th>
-                    <th>Hours Booked</th>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
                     <th>Court</th>
+                    <th>Total</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
 
@@ -208,11 +215,12 @@ $result = $stmt->get_result();
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
+                        echo "<td>" . $row['PAYMENTID'] . "</td>";
                         echo "<td>" . $row['BOOKINGID'] . "</td>";
                         echo "<td>" . $row['BOOKINGDATE'] . "</td>";
-                        echo "<td>" . $row['TIMESLOT'] . "</td>";
-                        echo "<td>" . $row['HOURSBOOKED'] . "</td>";
+                        echo "<td>" . $row['CUSTNAME'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
                 ?>
                         <td>
                             <a href="adminViewBookingDetail.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a>

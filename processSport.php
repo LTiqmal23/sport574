@@ -6,7 +6,7 @@
         $sportId = $_POST['sport'];
 
         // Prepare the SQL query to fetch court details based on selected sport
-        $stmt = $conn->prepare("select FACID, FACNAME FROM facility WHERE SPORTID = ?");
+        $stmt = $conn->prepare("select FACID, FACNAME FROM facility WHERE SPORTID = ? AND FACSTATUS = 'RUNNING'");
         $stmt->bind_param("s", $sportId);
         $stmt->execute();
         $result = $stmt->get_result();

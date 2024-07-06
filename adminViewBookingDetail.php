@@ -239,7 +239,7 @@ $viewID = $_GET["viewID"];
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="homeCus.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -249,10 +249,13 @@ $viewID = $_GET["viewID"];
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="viewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -266,7 +269,7 @@ $viewID = $_GET["viewID"];
     <main id="customer-details">
         <section class="choose-sport">
             <div class="container">
-                <a href="cusPastBooking.php" class="back-button">
+                <a href="adminViewBooking.php" class="back-button">
                     <img src="resource/backButton.svg" alt="Back">
                 </a>
                 <h1>Booking Details</h1>
@@ -335,12 +338,12 @@ $viewID = $_GET["viewID"];
 
                         <div class="table-container2">
                             <?php
-                            $sqlPayment = "select B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
-                            FROM booking B 
-                            JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
-                            JOIN FACILITY F ON B.FACID = F.FACID 
-                            JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
-                            WHERE B.BOOKINGID = ?";
+                            $sqlPayment = "SELECT B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
+                   FROM booking B 
+                   JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
+                   JOIN FACILITY F ON B.FACID = F.FACID 
+                   JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
+                   WHERE B.BOOKINGID = ?";
                             $stmtPayment = $conn->prepare($sqlPayment);
 
                             if ($stmtPayment) {

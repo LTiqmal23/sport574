@@ -31,7 +31,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
             // If username and password match
             $_SESSION['username'] = $row['USERNAME'];
             $_SESSION['ID'] = $row['CUSTID'];
-            header("location: home.php");
+            header("location: homeCus.php");
             exit();
         }
 

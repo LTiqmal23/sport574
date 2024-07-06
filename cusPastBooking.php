@@ -166,7 +166,7 @@ $result = $stmt->get_result();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="home.php">
+                <a class="navbar-brand" href="homeCus.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -176,7 +176,7 @@ $result = $stmt->get_result();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="checkTime.php">Book</a>
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profile</a>
@@ -193,7 +193,7 @@ $result = $stmt->get_result();
     <div class="container">
         <div class="title">
             <a href="profile.php" class="back-button">
-                <img src="resource/previous-btn.svg" alt="Back">
+                <img src="resource/backButton.svg" alt="Back">
             </a>
             <h1>Past Bookings</h1>
         </div>
@@ -222,7 +222,7 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['FACID'] . "</td>";
                         echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
                 ?>
-                        <td><a href="scrollable.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
+                        <td><a href="cusBookingDetails.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
                         </td>
                 <?php
                         echo "</tr>";
