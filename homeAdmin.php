@@ -18,10 +18,17 @@ $sqlGetCust = $conn->prepare("select COUNT(CUSTID) as totalCust from CUSTOMER");
 $sqlGetCust->execute();
 $resGetCust = $sqlGetCust->get_result();
 
-// total suspended court
-$sqlSuspended = $conn->prepare("select COUNT(FACID) as suspended from FACILITY WHERE FACSTATUS='SUSPENDED'");
-$sqlSuspended->execute();
-$resSuspended = $sqlSuspended->get_result();
+// Total running court
+$sqlRunning = $conn->prepare("SELECT COUNT(FACID) as running FROM FACILITY WHERE FACSTATUS='RUNNING'");
+$sqlRunning->execute();
+$resRunning = $sqlRunning->get_result();
+
+// Total all court
+$sqlTotalCourt = $conn->prepare("SELECT COUNT(FACID) as totalCourt FROM FACILITY");
+$sqlTotalCourt->execute();
+$resTotalCourt = $sqlTotalCourt->get_result();
+
+$totalCourt = 0;
 
 /*
 *
@@ -222,11 +229,17 @@ $cancelledTotalsJson = json_encode($cancelledTotals);
                 </div>
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h3 class="card-title">SUSPENDED COURT</h3>
+                        <h3 class="card-title">ACTIVE COURT</h3>
                         <?php
-                        if ($resSuspended->num_rows > 0) {
-                            while ($row = $resSuspended->fetch_assoc()) {
-                                echo "<h1>" . $row['suspended'] . "</h1>";
+                        if ($resTotalCourt->num_rows > 0) {
+                            while ($row = $resTotalCourt->fetch_assoc()) {
+                                $totalCourt = $row['totalCourt']; // Assign the value to $totalCourt
+                            }
+                        }
+
+                        if ($resRunning->num_rows > 0) {
+                            while ($row = $resRunning->fetch_assoc()) {
+                                echo "<h1>" . $row['running'] . "/" . $totalCourt . "</h1>";
                             }
                         } else {
                             echo "<h1>No customer registered</h1>";

@@ -28,7 +28,7 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch sport details with pagination
-$sql = "SELECT SPORTID, SPORTNAME FROM SPORT LIMIT ? OFFSET ?";
+$sql = "select SPORTID, SPORTNAME FROM SPORT LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
@@ -36,9 +36,9 @@ $result = $stmt->get_result();
 
 
 // Query to fetch sport details along with the total number of courts
-$sql = "select COUNT(FACID) as total, S.SPORTID, S.SPORTNAME 
-        FROM FACILITY F 
-        JOIN SPORT S ON F.SPORTID = S.SPORTID 
+$sql = "select S.SPORTID, S.SPORTNAME, COUNT(F.FACID) AS total
+        FROM SPORT S
+        LEFT JOIN FACILITY F ON S.SPORTID = F.SPORTID
         GROUP BY S.SPORTID, S.SPORTNAME";
 $result = $conn->query($sql);
 
@@ -49,7 +49,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Addon</title>
+    <title>View Sport</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 
@@ -213,6 +213,7 @@ $result = $conn->query($sql);
                     <th>Sport ID</th>
                     <th>Sport Name</th>
                     <th>Total Court</th>
+                    <th>Action</th>
                 </tr>
 
                 <?php
@@ -224,6 +225,11 @@ $result = $conn->query($sql);
                         echo "<td>" . $row['SPORTID'] . "</td>";
                         echo "<td>" . $row['SPORTNAME'] . "</td>";
                         echo "<td>" . $row['total'] . "</td>";
+                ?>
+                        <td>
+                            <a href="processDeleteSport.php?deleteID=<?php echo $row['SPORTID']; ?>" class="btn btn-danger">Delete</a>
+                        </td>
+                <?php
                         echo "</tr>";
                         $counter++;
                     }
@@ -252,6 +258,10 @@ $result = $conn->query($sql);
                     </li>
                 </ul>
             </nav>
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-success" type="button" href="adminAddSport.php">Add Sport</a>
+                <a class="btn btn-success" type="button" href="adminAddFac.php">Assign Facility</a>
+            </div>
         </div>
     </div>
     </div>

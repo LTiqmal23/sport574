@@ -266,8 +266,6 @@ $result = $stmt->get_result();
                             <a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a>
                             <a href="processDeleteAddon.php?deleteID=<?php echo $row['ADDONID']; ?>" class="btn btn-danger">Delete</a>
                         </td>
-
-                        </td>
                 <?php
                         echo "</tr>";
                         $counter++;

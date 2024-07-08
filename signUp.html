@@ -75,7 +75,18 @@
         .register-link p a:hover {
             text-decoration: underline;
         }
+
+        .input-box {
+            margin-bottom: 1rem;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.875rem;
+        }
     </style>
+
+
 </head>
 
 <body class="register-body">
@@ -92,7 +103,7 @@
 
             <p>come on and join us!</p>
             <br>
-            <form action="register.php" method="post">
+            <form action="register.php" method="post" onsubmit="return validateForm();">
                 <div class="input-box">
                     <input type="text" id="name" name="name" placeholder="Name" required>
                 </div>
@@ -110,11 +121,11 @@
                 </div>
 
                 <div class="input-box">
-                    <input type="text" id="password" name="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
 
                 <div class="input-box">
-                    <input type="password" placeholder="Confirm Password" required>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
                 </div>
 
                 <button class="register-btn" type="submit">SIGN UP</button>
@@ -122,10 +133,58 @@
             <div class="register-link">
                 <p>Already have an account? <a href="login.php">Login</a></p>
             </div>
-            </form>
 
         </div>
     </div>
+    <script>
+        function validateForm() {
+            let name = document.getElementById('name').value;
+            let username = document.getElementById('username').value;
+            let address = document.getElementById('address').value;
+            let phone = document.getElementById('phone').value;
+            let password = document.getElementById('password').value;
+            let confirmPassword = document.getElementById('confirmPassword').value;
+            let errorMessage = '';
+
+            // Validate name
+            if (name === '') {
+                errorMessage += 'Name is required.\n';
+            }
+
+            // Validate username
+            if (username === '') {
+                errorMessage += 'Username is required.\n';
+            }
+
+            // Validate address
+            if (address === '') {
+                errorMessage += 'Address is required.\n';
+            }
+
+            // Validate phone number
+            if (phone === '' || !/^\d{10}$/.test(phone)) {
+                errorMessage += 'Phone number is required and should be 10 digits.\n';
+            }
+
+            // Validate password
+            if (password === '') {
+                errorMessage += 'Password is required.\n';
+            }
+
+            // Validate confirm password
+            if (confirmPassword === '' || password !== confirmPassword) {
+                errorMessage += 'Passwords do not match.\n';
+            }
+
+            // Display error message if any validation fails
+            if (errorMessage !== '') {
+                alert(errorMessage);
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 
 </html>
