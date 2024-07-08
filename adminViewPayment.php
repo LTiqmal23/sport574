@@ -153,6 +153,30 @@ $result = $stmt->get_result();
             margin-top: 20px;
             /* Add space between the table and pagination */
         }
+
+        /*
+        color status
+        */
+        .status {
+            border-radius: 0.2rem;
+            padding: 0.2rem 1rem;
+            text-align: center;
+        }
+
+        .status-pending {
+            background-color: #fff0c2;
+            color: #a68b00;
+        }
+
+        .status-paid {
+            background-color: #c8e6c9;
+            color: #388e3c;
+        }
+
+        .status-unpaid {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
     </style>
 </head>
 
@@ -213,6 +237,15 @@ $result = $stmt->get_result();
                 if ($result->num_rows > 0) {
                     $counter = 1 + $offset;
                     while ($row = $result->fetch_assoc()) {
+                        $statusClass = '';
+                        if ($row['PAYMENTSTATUS'] == 'PAID') {
+                            $statusClass = 'status-paid';
+                        } elseif ($row['PAYMENTSTATUS'] == 'CANCELLED') {
+                            $statusClass = 'status-unpaid';
+                        } else {
+                            $statusClass = 'status-pending';
+                        }
+
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
                         echo "<td>" . $row['PAYMENTID'] . "</td>";
@@ -221,6 +254,11 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['CUSTNAME'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
                         echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
+                        echo "<td><p class='status $statusClass'>" . $row['PAYMENTSTATUS'] . "</p></td>";
+                        // echo "<td>" . $row['PAYMENTSTATUS'] . "</td>";
+
+                        // Determine the CSS class based on the payment status
+
                 ?>
                         <td>
                             <a href="adminViewBookingDetail.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a>
@@ -231,7 +269,7 @@ $result = $stmt->get_result();
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
+                    echo "<tr><td colspan='9'>No payment(s) found</td></tr>";
                 }
                 ?>
             </table>

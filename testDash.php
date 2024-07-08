@@ -1,487 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
-include "config.php";
+session_start();
 
-// pending payment
-$sqlGetPending = $conn->prepare("select COUNT(PAYMENTID) as totalPending from payment where PAYMENTSTATUS='PENDING'");
-$sqlGetPending->execute();
-$resGetPending = $sqlGetPending->get_result();
-
-// total income
-$sqlGetTotal = $conn->prepare("select SUM(PAYMENTTOTAL) as totalPay from payment where PAYMENTSTATUS='PAID'");
-$sqlGetTotal->execute();
-$resGetTotal = $sqlGetTotal->get_result();
-
-// total registered customer
-$sqlGetCust = $conn->prepare("select COUNT(CUSTID) as totalCust from CUSTOMER");
-$sqlGetCust->execute();
-$resGetCust = $sqlGetCust->get_result();
-
-// total suspended court
-$sqlSuspended = $conn->prepare("select COUNT(FACID) as suspended from FACILITY WHERE FACSTATUS='SUSPENDED'");
-$sqlSuspended->execute();
-$resSuspended = $sqlSuspended->get_result();
-
-/*
-*
-*
-*
-*
-*
-*
-sql chart1
-*/
-
-$sql = "select A.ADDONNAME, SUM(BA.QUANTITY) AS total
-        FROM addon A 
-        JOIN booking_addon BA 
-        ON A.ADDONID = BA.ADDONID
-        GROUP BY ADDONNAME";
-$result = $conn->query($sql);
-
-$addonNames = [];
-$totals = [];
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $addonNames[] = $row['ADDONNAME'];
-        $totals[] = $row['total'];
-    }
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
+    header("Location: login.php");
+    exit();
 }
 
-// Convert PHP arrays to JSON
-$addonNamesJson = json_encode($addonNames);
-$totalsJson = json_encode($totals);
+$sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 
+require_once("config.php");
 
-/*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-sql chartArea
-*/
-// Fetch data for 'PAID' bookings grouped by month
-$sqlSeries1 = "
-    SELECT DATE_FORMAT(PAYMENTDATE, '%Y-%m') AS payment_month, COUNT(BOOKINGID) AS total_paid
-    FROM PAYMENT
-    WHERE PAYMENTSTATUS = 'PAID'
-    GROUP BY payment_month
-    ORDER BY payment_month";
-$result1 = $conn->query($sqlSeries1);
-
-$paidMonths = [];
-$paidTotals = [];
-
-if ($result1->num_rows > 0) {
-    while ($row = $result1->fetch_assoc()) {
-        $paidMonths[] = $row['payment_month'];
-        $paidTotals[] = $row['total_paid'];
-    }
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch data for 'CANCELLED' bookings grouped by month
-$sqlSeries2 = "
-    SELECT DATE_FORMAT(PAYMENTDATE, '%Y-%m') AS payment_month, COUNT(BOOKINGID) AS total_cancelled
-    FROM PAYMENT
-    WHERE PAYMENTSTATUS = 'CANCELLED'
-    GROUP BY payment_month
-    ORDER BY payment_month";
-$result2 = $conn->query($sqlSeries2);
+// Get the current page number from the query parameter; default to 1 if not set
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$records_per_page = 5; // Number of records to display per page
+$offset = ($page - 1) * $records_per_page;
 
-$cancelledMonths = [];
-$cancelledTotals = [];
+// Fetch the total number of records
+$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ?";
+$total_records_stmt = $conn->prepare($total_records_sql);
+$total_records_stmt->bind_param("i", $sessionID);
+$total_records_stmt->execute();
+$total_records_result = $total_records_stmt->get_result();
+$total_records = $total_records_result->fetch_assoc()['total'];
+$total_pages = ceil($total_records / $records_per_page);
 
-if ($result2->num_rows > 0) {
-    while ($row = $result2->fetch_assoc()) {
-        $cancelledMonths[] = $row['payment_month'];
-        $cancelledTotals[] = $row['total_cancelled'];
-    }
-}
-
-$conn->close();
-$monthsJson = json_encode($paidMonths);
-$paidTotalsJson = json_encode($paidTotals);
-$cancelledTotalsJson = json_encode($cancelledTotals);
+// Query to fetch bookings
+$sql = "select B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL, P.PAYMENTSTATUS
+FROM BOOKING B 
+JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID 
+WHERE B.CUSTID = ? LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Admin Dashboard</title>
-
-    <!-- Montserrat Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Bookings</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="testStyle.css">
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
-        h3 {
-            font-weight: 500;
-            font-size: 20px;
+        .container {
+            background-color: #fff;
+            width: 90%;
+            margin: 20px auto;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        h1 {
-            font-weight: 800;
-            color: #000000;
-            font-size: 30px;
+        .title {
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .title h1 {
+            display: inline-block;
+            position: relative;
+            font-family: 'Poppins';
+            font-weight: 600;
+            color: #000;
+        }
+
+        .title h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+            background: #1A307F;
+            border-radius: 3px;
+        }
+
+        .content {
+            width: 90%;
+        }
+
+        .content table {
+            width: 90%;
+            text-align: center;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .content th,
+        .content td {
+            padding: 10px;
+        }
+
+        .content .header {
+            background-color: #FF8A1E;
+        }
+
+        .content .info {
+            background-color: #dfdfdf;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #1A307F;
+            color: #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            margin-right: 10px;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #1A307F;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+            border: 1px solid #1A307F;
+            border-radius: 5px;
+        }
+
+        .pagination a.active {
+            background-color: #1A307F;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            /* Add space between the table and pagination */
+        }
+
+        /*
+        color status
+        */
+        .status {
+            border-radius: 0.2rem;
+            padding: 0.2rem 1rem;
+            text-align: center;
+        }
+
+        .status-pending {
+            background-color: #fff0c2;
+            color: #a68b00;
+        }
+
+        .status-paid {
+            background-color: #c8e6c9;
+            color: #388e3c;
+        }
+
+        .status-unpaid {
+            background-color: #ffcdd2;
+            color: #c62828;
         }
     </style>
 </head>
 
 <body>
-    <div class="grid-container">
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="homeAdmin.php">
-                        <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                        SPORTFUSION
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="adminViewAddon.php">Addon</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="adminViewBooking.php">Booking</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="adminViewSport.php">Sport</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="logout.php">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="homeCus.php">
+                    <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                    SPORTFUSION
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.php">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="title">
+            <a href="profile.php" class="back-button">
+                <img src="resource/backButton.svg" alt="Back">
+            </a>
+            <h1>Past Bookings</h1>
+        </div>
+
+        <div class="content">
+            <table>
+                <tr class="header">
+                    <th>No</th>
+                    <th>Booking ID</th>
+                    <th>Date</th>
+                    <th>Time Slot</th>
+                    <th>Court</th>
+                    <th>Total Payment</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+                <?php
+                if ($result->num_rows > 0) {
+                    $counter = 1 + $offset;
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr class='info'>";
+                        echo "<td>" . $counter . "</td>";
+                        echo "<td>" . $row['BOOKINGID'] . "</td>";
+                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
+                        echo "<td>" . $row['TIMESLOT'] . "</td>";
+                        echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td><b>RM" . $row['PAYMENTTOTAL'] . "</b></td>";
+
+                        // Determine the CSS class based on the payment status
+                        $statusClass = '';
+                        if ($row['PAYMENTSTATUS'] == 'PAID') {
+                            $statusClass = 'status-paid';
+                        } elseif ($row['PAYMENTSTATUS'] == 'CANCELLED') {
+                            $statusClass = 'status-unpaid';
+                        } else {
+                            $statusClass = 'status-pending';
+                        }
+
+                        echo "<td><p class='status $statusClass'>" . $row['PAYMENTSTATUS'] . "</p></td>";
+                ?>
+                        <td><a href="cusBookingDetails.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
+                <?php
+                        echo "</tr>";
+                        $counter++;
+                    }
+                } else {
+                    echo "<tr><td colspan='8'>No bookings found</td></tr>";
+                }
+                ?>
+            </table>
+
+
+            <!-- Pagination controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page - 1; ?>">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                        <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php } ?>
+                    <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $page + 1; ?>">Next</a>
+                    </li>
+                </ul>
             </nav>
-        </header>
-
-        <main class="main-container">
-
-            <div class="main-cards">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h3 class="card-title">PENDING PAYMENT</>
-                            <?php
-                            if ($resGetPending->num_rows > 0) {
-                                while ($row = $resGetPending->fetch_assoc()) {
-                                    echo "<h1>" . $row['totalPending'] . "</h1>";
-                                }
-                            } else {
-                                echo "<h1>No pending payment found</h1>";
-                            }
-                            ?>
-                            <a href="#" class="card-link btn btn-dark">View</a>
-                    </div>
-                </div>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h3 class="card-title">GROSS INCOME</h3>
-                        <?php
-                        if ($resGetTotal->num_rows > 0) {
-                            while ($row = $resGetTotal->fetch_assoc()) {
-                                echo "<h1>RM" . $row['totalPay'] . "</h1>";
-                            }
-                        } else {
-                            echo "<h1>No pending payment found</h1>";
-                        }
-                        ?>
-                        <a href="#" class="card-link btn btn-dark">View</a>
-                    </div>
-                </div>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h3 class="card-title">CUSTOMER</h3>
-                        <?php
-                        if ($resGetCust->num_rows > 0) {
-                            while ($row = $resGetCust->fetch_assoc()) {
-                                echo "<h1>" . $row['totalCust'] . "</h1>";
-                            }
-                        } else {
-                            echo "<h1>No customer registered</h1>";
-                        }
-                        ?>
-                        <a href="#" class="card-link btn btn-dark">View</a>
-                    </div>
-                </div>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h3 class="card-title">SUSPENDED COURT</h3>
-                        <?php
-                        if ($resSuspended->num_rows > 0) {
-                            while ($row = $resSuspended->fetch_assoc()) {
-                                echo "<h1>" . $row['suspended'] . "</h1>";
-                            }
-                        } else {
-                            echo "<h1>No customer registered</h1>";
-                        }
-                        ?>
-                        <a href="#" class="card-link btn btn-dark">View</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="charts">
-
-                <div class="charts-card">
-                    <h2 class="chart-title">Top 5 Addons</h2>
-                    <div id="bar-chart"></div>
-                </div>
-
-                <div class="charts-card">
-                    <h2 class="chart-title">Paid and Cancelled Booking</h2>
-                    <div id="area-chart"></div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
-
-
-
-    <script>
-        // Get the PHP data
-        const addonNames = <?php echo $addonNamesJson; ?>;
-        const totals = <?php echo $totalsJson; ?>;
-
-        // BAR CHART
-        const barChartOptions = {
-            series: [{
-                data: totals,
-                name: 'Total Usage',
-            }, ],
-            chart: {
-                type: 'bar',
-                background: 'transparent',
-                height: 350,
-                toolbar: {
-                    show: false,
-                },
-            },
-            colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3'],
-            plotOptions: {
-                bar: {
-                    distributed: true,
-                    borderRadius: 4,
-                    horizontal: false,
-                    columnWidth: '40%',
-                },
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            fill: {
-                opacity: 1,
-            },
-            grid: {
-                borderColor: '#55596e',
-                yaxis: {
-                    lines: {
-                        show: true,
-                    },
-                },
-                xaxis: {
-                    lines: {
-                        show: true,
-                    },
-                },
-            },
-            legend: {
-                labels: {
-                    colors: '#f5f7ff',
-                },
-                show: true,
-                position: 'top',
-            },
-            stroke: {
-                colors: ['transparent'],
-                show: true,
-                width: 2,
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                theme: 'dark',
-            },
-            xaxis: {
-                categories: addonNames,
-                title: {
-                    style: {
-                        color: '#f5f7ff',
-                    },
-                },
-                axisBorder: {
-                    show: true,
-                    color: '#55596e',
-                },
-                axisTicks: {
-                    show: true,
-                    color: '#55596e',
-                },
-                labels: {
-                    style: {
-                        colors: '#f5f7ff',
-                    },
-                },
-            },
-            yaxis: {
-                tickAmount: 10, // Set the number of ticks based on the highest total
-                labels: {
-                    formatter: function(val) {
-                        return Math.round(val); // Round the values to the nearest integer
-                    },
-                    style: {
-                        colors: '#f5f7ff',
-                    },
-                },
-                title: {
-                    text: 'Total Usage',
-                    style: {
-                        color: '#f5f7ff',
-                    },
-                },
-                axisBorder: {
-                    color: '#55596e',
-                    show: true,
-                },
-                axisTicks: {
-                    color: '#55596e',
-                    show: true,
-                },
-            },
-        };
-
-        const barChart = new ApexCharts(
-            document.querySelector('#bar-chart'),
-            barChartOptions
-        );
-        barChart.render();
-
-        // Get the PHP data
-        const months = <?php echo $monthsJson; ?>;
-        const paidTotals = <?php echo $paidTotalsJson; ?>;
-        const cancelledTotals = <?php echo $cancelledTotalsJson; ?>;
-
-        // AREA CHART
-        const areaChartOptions = {
-            series: [{
-                    name: 'Paid Bookings',
-                    data: paidTotals,
-                },
-                {
-                    name: 'Cancelled Bookings',
-                    data: cancelledTotals,
-                },
-            ],
-            chart: {
-                type: 'area',
-                background: 'transparent',
-                height: 350,
-                stacked: false,
-                toolbar: {
-                    show: false,
-                },
-            },
-            colors: ['#00ab57', '#d50000'],
-            labels: months,
-            dataLabels: {
-                enabled: false,
-            },
-            fill: {
-                gradient: {
-                    opacityFrom: 0.4,
-                    opacityTo: 0.1,
-                    shadeIntensity: 1,
-                    stops: [0, 100],
-                    type: 'vertical',
-                },
-                type: 'gradient',
-            },
-            grid: {
-                borderColor: '#55596e',
-                yaxis: {
-                    lines: {
-                        show: true,
-                    },
-                },
-                xaxis: {
-                    lines: {
-                        show: true,
-                    },
-                },
-            },
-            legend: {
-                labels: {
-                    colors: '#f5f7ff',
-                },
-                show: true,
-                position: 'top',
-            },
-            markers: {
-                size: 6,
-                strokeColors: '#1b2635',
-                strokeWidth: 3,
-            },
-            stroke: {
-                curve: 'smooth',
-            },
-            xaxis: {
-                axisBorder: {
-                    color: '#55596e',
-                    show: true,
-                },
-                axisTicks: {
-                    color: '#55596e',
-                    show: true,
-                },
-                labels: {
-                    offsetY: 5,
-                    style: {
-                        colors: '#f5f7ff',
-                    },
-                },
-            },
-            yaxis: [{
-                title: {
-                    text: 'Paid Bookings',
-                    style: {
-                        color: '#f5f7ff',
-                    },
-                },
-                labels: {
-                    style: {
-                        colors: ['#f5f7ff'],
-                    },
-                },
-            }, ],
-            tooltip: {
-                shared: true,
-                intersect: false,
-                theme: 'dark',
-            },
-        };
-
-        const areaChart = new ApexCharts(
-            document.querySelector('#area-chart'),
-            areaChartOptions
-        );
-        areaChart.render();
-    </script>
 </body>
 
 </html>

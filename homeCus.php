@@ -102,7 +102,7 @@ $sessionID = $_SESSION['ID'];
                 </h1>
                 <br>
                 <br>
-                <a href="checkTime.php">GET STARTED</a>
+                <a href="cusCheckTime.php">GET STARTED</a>
             </div>
 
             <div class="home-icon">

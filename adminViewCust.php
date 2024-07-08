@@ -1,21 +1,12 @@
+<!DOCTYPE html>
 <?php
 session_start();
+require_once('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
-    echo "<script>alert('Log In First');</script>";
-    header("Location: login.php");
-    exit();
-}
 
-$sessionID = $_SESSION['ID'];
-$sessionUsername = $_SESSION['username'];
-
-require_once("config.php");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Fetch all addons
+$sql = "select * FROM CUSTOMER";
+$result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -23,41 +14,34 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE CUSTID = ?";
+$total_records_sql = "select COUNT(*) as total FROM CUSTOMER";
 $total_records_stmt = $conn->prepare($total_records_sql);
-$total_records_stmt->bind_param("i", $sessionID);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL, P.PAYMENTSTATUS
-FROM BOOKING B 
-JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID
-WHERE B.CUSTID = ?
-ORDER BY B.BOOKINGID DESC
-LIMIT ? OFFSET ?";
+$sql = "select * FROM CUSTOMER LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
+$stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
-
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Bookings</title>
-    <link rel="stylesheet" href="style.css">
+    <title>View Customer</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+
     <style>
         .container {
             background-color: #fff;
-            width: 90%;
+            width: 80%;
             margin: 20px auto;
             border-radius: 15px;
             padding: 20px;
@@ -100,7 +84,7 @@ $result = $stmt->get_result();
         }
 
         .content table {
-            width: 90%;
+            width: 80%;
             text-align: center;
             margin: 0 auto;
             padding: 10px;
@@ -165,30 +149,6 @@ $result = $stmt->get_result();
             margin-top: 20px;
             /* Add space between the table and pagination */
         }
-
-        /*
-        color status
-        */
-        .status {
-            border-radius: 0.2rem;
-            padding: 0.2rem 1rem;
-            text-align: center;
-        }
-
-        .status-pending {
-            background-color: #fff0c2;
-            color: #a68b00;
-        }
-
-        .status-paid {
-            background-color: #c8e6c9;
-            color: #388e3c;
-        }
-
-        .status-unpaid {
-            background-color: #ffcdd2;
-            color: #c62828;
-        }
     </style>
 </head>
 
@@ -196,7 +156,7 @@ $result = $stmt->get_result();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="homeCus.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -206,10 +166,13 @@ $result = $stmt->get_result();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -222,23 +185,21 @@ $result = $stmt->get_result();
 
     <div class="container">
         <div class="title">
-            <a href="profile.php" class="back-button">
+            <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>Past Bookings</h1>
+            <h1>List of Customer</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Booking ID</th>
-                    <th>Date</th>
-                    <th>Time Slot</th>
-                    <th>Court</th>
-                    <th>Total Payment</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th colspan="2">Action</th>
                 </tr>
 
                 <?php
@@ -247,31 +208,22 @@ $result = $stmt->get_result();
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['BOOKINGID'] . "</td>";
-                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
-                        echo "<td>" . $row['TIMESLOT'] . "</td>";
-                        echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td><b>RM" . $row['PAYMENTTOTAL'] . "</b></td>";
-
-                        // Determine the CSS class based on the payment status
-                        $statusClass = '';
-                        if ($row['PAYMENTSTATUS'] == 'PAID') {
-                            $statusClass = 'status-paid';
-                        } elseif ($row['PAYMENTSTATUS'] == 'CANCELLED') {
-                            $statusClass = 'status-unpaid';
-                        } else {
-                            $statusClass = 'status-pending';
-                        }
-
-                        echo "<td><p class='status $statusClass'>" . $row['PAYMENTSTATUS'] . "</p></td>";
+                        echo "<td>" . $row['CUSTID'] . "</td>";
+                        echo "<td>" . $row['CUSTNAME'] . "</td>";
+                        echo "<td>" . $row['CUSTPHONE'] . "</td>";
+                        echo "<td>" . $row['CUSTADDRESS'] . "</td>";
                 ?>
-                        <td><a href="cusBookingDetails.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
+                        <td>
+                            <a href="adminCustDetail.php?viewID=<?php echo $row['CUSTID']; ?>" class="btn btn-primary">View</a>
+                        </td>
+
+                        </td>
                 <?php
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='8'>No bookings found</td></tr>";
+                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
                 }
                 ?>
             </table>
@@ -293,8 +245,14 @@ $result = $stmt->get_result();
                     </li>
                 </ul>
             </nav>
+
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-success" type="button" href="adminAddCust.php">Add Customer</a>
+            </div>
         </div>
     </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
