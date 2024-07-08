@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start(); // Start the session
+session_start();
 
-if (!isset($_SESSION['ID'])) {
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
     header("Location: login.php");
     exit();
 }
 
-// session
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 
 // fetch from previous page
 $preSport = $_POST['sport'];
@@ -160,7 +161,7 @@ if ($resultSportName->num_rows > 0) {
                 <div class="col-md-6 input-box">
                     <label for="court" class="form-label">Court</label>
                     <select id="court" name="court" class="form-control" required>
-                        <option>Select an option</option>
+                        <option value="">Select an option</option>
                         <?php
                         // Prepare the SQL query to fetch court details based on selected sport, date, and timeslot
                         $stmt = $conn->prepare("

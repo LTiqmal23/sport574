@@ -4,7 +4,7 @@ session_start();
 // Check if user is logged in
 if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 

@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <?php
 session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
+    header("Location: login.php");
+    exit();
+}
+
+$sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
+
 require_once('config.php');
 
 // Fetch all addons

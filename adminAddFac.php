@@ -4,11 +4,12 @@ session_start();
 // Check if user is logged in
 if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 
 include "config.php";
 
@@ -173,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="homeCus.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -183,10 +184,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>

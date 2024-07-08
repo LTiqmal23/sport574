@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include "config.php";
+session_start(); // Start the session
 
+if (!isset($_SESSION['ID'])) {
+    echo "<script>Log In First</script>";
+    header("Location: login.php");
+    exit();
+}
+
+$sessionID = $_SESSION['ID'];
+
+include "config.php";
 // pending payment
 $sqlGetPending = $conn->prepare("select COUNT(PAYMENTID) as totalPending from payment where PAYMENTSTATUS='PENDING'");
 $sqlGetPending->execute();

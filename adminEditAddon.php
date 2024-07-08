@@ -4,14 +4,17 @@ session_start();
 // Check if user is logged in
 if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 
 $sessionID = $_SESSION['ID'];
-$editID = $_GET['editID'];
+$sessionUsername = $_SESSION['username'];
+
 
 include "config.php";
+$editID = $_GET['editID'];
+
 
 // Fetch addon data
 $sql = "SELECT * FROM ADDON WHERE ADDONID = ?";
