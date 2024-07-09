@@ -175,7 +175,7 @@ require_once("config.php");
 
                             <div class="input-box">
                                 <label for="bookdate">Date</label>
-                                <input type="date" id="bookdate" name="bookdate">
+                                <input type="date" id="bookdate" name="bookdate" required>
                             </div>
 
                             <div class="input-box">
