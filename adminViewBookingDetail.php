@@ -273,7 +273,7 @@ $viewID = $_GET["viewID"];
     <main id="customer-details">
         <section class="choose-sport">
             <div class="container">
-                <a href="adminViewBooking.php" class="back-button">
+                <a href="adminViewPayment.php" class="back-button">
                     <img src="resource/backButton.svg" alt="Back">
                 </a>
                 <h1>Booking Details</h1>
