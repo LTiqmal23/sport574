@@ -248,7 +248,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="col-md-6 input-box">
                     <label for="status">Facility Status</label>
-                    <input type="text" class="form-control" id="status" name="status" placeholder="RUNNING, SUSPENDED..." required>
+                    <select id="status" name="status" class="form-control">
+                        <option value="RUNNING">RUNNING</option>
+                        <option value="SUSPENDED">SUSPENDED</option>
+                    </select>
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="submit-button">Submit</button>

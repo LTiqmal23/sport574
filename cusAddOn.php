@@ -171,14 +171,14 @@ include "config.php";
                                 <!-- display -->
                                 <?php
                                 include "config.php";
-                                $sql = "SELECT ADDONID, ADDONNAME, ADDONPRICE FROM ADDON";
+                                $sql = "SELECT ADDONID, ADDONNAME, ADDONPRICE, ADDONQUANTITY FROM ADDON";
                                 $result = $conn->query($sql);
 
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<div class='addon-item'>";
                                         echo "<label>" . $row['ADDONNAME'] . " (RM" . $row['ADDONPRICE'] . ")</label>";
-                                        echo "<input type='number' class='form-control addon-quantity' data-id='" . $row['ADDONID'] . "' data-name='" . $row['ADDONNAME'] . "' data-price='" . $row['ADDONPRICE'] . "' id='quantity_" . $row['ADDONID'] . "' name='quantity[" . $row['ADDONID'] . "]' min='0'>";
+                                        echo "<input type='number' class='form-control addon-quantity' data-id='" . $row['ADDONID'] . "' data-name='" . $row['ADDONNAME'] . "' data-price='" . $row['ADDONPRICE'] . "' data-available='" . $row['ADDONQUANTITY'] . "' id='quantity_" . $row['ADDONID'] . "' name='quantity[" . $row['ADDONID'] . "]' min='0'>";
                                         echo "</div>";
                                     }
                                 } else {
@@ -310,6 +310,27 @@ include "config.php";
 
             // Initial calculation of grand total
             calculateGrandTotal();
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector("form").addEventListener("submit", function(event) {
+                const quantities = document.querySelectorAll(".addon-quantity");
+                let isValid = true;
+
+                quantities.forEach(function(input) {
+                    const maxAvailable = parseInt(input.getAttribute("data-available"));
+                    const enteredQuantity = parseInt(input.value);
+
+                    if (enteredQuantity > maxAvailable) {
+                        alert(`The quantity for ${input.getAttribute("data-name")} exceeds the available stock of ${maxAvailable}.`);
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
         });
     </script>
 </body>
