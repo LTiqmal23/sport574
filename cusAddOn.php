@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start(); // Start the session
+session_start();
 
-if (!isset($_SESSION['ID'])) {
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
     echo "<script>alert('Log In First');</script>";
     header("Location: login.php");
     exit();
@@ -11,6 +12,7 @@ if (!isset($_SESSION['ID'])) {
 
 // session
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 
 // fetch from previous page
 $preDate = $_POST['bookingdate'];
@@ -213,9 +215,9 @@ include "config.php";
                                 $hoursBooked = $preHoursBooked; // Example hours booked, replace with your logic
 
                                 // Prepare the SQL query to fetch court information based on FACID
-                                $sqlSportName = "SELECT * FROM FACILITY WHERE FACID = ?";
+                                $sqlSportName = "select * FROM FACILITY WHERE FACID = ?";
                                 $stmt = $conn->prepare($sqlSportName);
-                                $stmt->bind_param("i", $preCourtID);
+                                $stmt->bind_param("s", $preCourtID);
                                 $stmt->execute();
                                 $resultCourt = $stmt->get_result();
 

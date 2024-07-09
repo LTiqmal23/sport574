@@ -32,11 +32,17 @@ $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
 // Query to fetch bookings
-$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL FROM BOOKING B JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID WHERE B.CUSTID = ? LIMIT ? OFFSET ?";
+$sql = "SELECT B.BOOKINGID, BOOKINGDATE, TIMESLOT, FACID, P.PAYMENTTOTAL, P.PAYMENTSTATUS
+FROM BOOKING B 
+JOIN PAYMENT P ON B.BOOKINGID=P.BOOKINGID
+WHERE B.CUSTID = ?
+ORDER BY B.BOOKINGID DESC
+LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("iii", $sessionID, $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -46,12 +52,12 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Past Bookings</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <style>
         .container {
             background-color: #fff;
-            width: 80%;
+            width: 90%;
             margin: 20px auto;
             border-radius: 15px;
             padding: 20px;
@@ -94,7 +100,7 @@ $result = $stmt->get_result();
         }
 
         .content table {
-            width: 80%;
+            width: 90%;
             text-align: center;
             margin: 0 auto;
             padding: 10px;
@@ -159,6 +165,30 @@ $result = $stmt->get_result();
             margin-top: 20px;
             /* Add space between the table and pagination */
         }
+
+        /*
+        color status
+        */
+        .status {
+            border-radius: 0.2rem;
+            padding: 0.2rem 1rem;
+            text-align: center;
+        }
+
+        .status-pending {
+            background-color: #fff0c2;
+            color: #a68b00;
+        }
+
+        .status-paid {
+            background-color: #c8e6c9;
+            color: #388e3c;
+        }
+
+        .status-unpaid {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
     </style>
 </head>
 
@@ -207,6 +237,7 @@ $result = $stmt->get_result();
                     <th>Time Slot</th>
                     <th>Court</th>
                     <th>Total Payment</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
 
@@ -220,19 +251,31 @@ $result = $stmt->get_result();
                         echo "<td>" . $row['BOOKINGDATE'] . "</td>";
                         echo "<td>" . $row['TIMESLOT'] . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
-                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
+                        echo "<td><b>RM" . $row['PAYMENTTOTAL'] . "</b></td>";
+
+                        // Determine the CSS class based on the payment status
+                        $statusClass = '';
+                        if ($row['PAYMENTSTATUS'] == 'PAID') {
+                            $statusClass = 'status-paid';
+                        } elseif ($row['PAYMENTSTATUS'] == 'CANCELLED') {
+                            $statusClass = 'status-unpaid';
+                        } else {
+                            $statusClass = 'status-pending';
+                        }
+
+                        echo "<td><p class='status $statusClass'>" . $row['PAYMENTSTATUS'] . "</p></td>";
                 ?>
                         <td><a href="cusBookingDetails.php?viewID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">View</a></td>
-                        </td>
                 <?php
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='6'>No bookings found</td></tr>";
+                    echo "<tr><td colspan='8'>No bookings found</td></tr>";
                 }
                 ?>
             </table>
+
 
             <!-- Pagination controls -->
             <nav aria-label="Page navigation">

@@ -1,0 +1,29 @@
+:root {
+    --clr-pending: #fff0c2;
+    --clr-pending-font: #a68b00;
+    --clr-unpaid: #ffcdd2;
+    --clr-unpaid-font: #c62828;
+    --clr-paid: #c8e6c9;
+    --clr-paid-font: #388e3c;
+}
+
+.status {
+    border-radius: 0.2rem;
+    padding: 0.2rem 1rem;
+    text-align: center;
+}
+
+.status-pending {
+    background-color: var(--clr-pending);
+    color: var(--clr-pending-font);
+}
+
+.status-paid {
+    background-color: var(--clr-paid);
+    color: var(--clr-paid-font);
+}
+
+.status-unpaid {
+    background-color: var(--clr-unpaid);
+    color: var(--clr-unpaid-font);
+}

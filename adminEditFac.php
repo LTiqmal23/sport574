@@ -12,11 +12,11 @@ if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
 $sessionID = $_SESSION['ID'];
 $sessionUsername = $_SESSION['username'];
 
-require_once("config.php");
+require_once('config.php');
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Fetch all addons
+$sql = "select * FROM facility";
+$result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -24,28 +24,21 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM SPORT";
+$total_records_sql = "select COUNT(*) as total FROM FACILITY";
 $total_records_stmt = $conn->prepare($total_records_sql);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-// Query to fetch sport details with pagination
-$sql = "select SPORTID, SPORTNAME FROM SPORT LIMIT ? OFFSET ?";
+// Query to fetch bookings
+$sql = "select F.* 
+        FROM FACILITY F
+        LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
-
-
-// Query to fetch sport details along with the total number of courts
-$sql = "select S.SPORTID, S.SPORTNAME, COUNT(F.FACID) AS total
-        FROM SPORT S
-        LEFT JOIN FACILITY F ON S.SPORTID = F.SPORTID
-        GROUP BY S.SPORTID, S.SPORTNAME";
-$result = $conn->query($sql);
-
 ?>
 
 <html lang="en">
@@ -53,14 +46,14 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Sport</title>
+    <title>Edit Facility</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 
     <style>
         .container {
             background-color: #fff;
-            width: 80%;
+            width: 90%;
             margin: 20px auto;
             border-radius: 15px;
             padding: 20px;
@@ -103,7 +96,7 @@ $result = $conn->query($sql);
         }
 
         .content table {
-            width: 80%;
+            width: 90%;
             text-align: center;
             margin: 0 auto;
             padding: 10px;
@@ -168,6 +161,30 @@ $result = $conn->query($sql);
             margin-top: 20px;
             /* Add space between the table and pagination */
         }
+
+        /*
+        color status
+        */
+        .status {
+            border-radius: 0.2rem;
+            padding: 0.2rem 1rem;
+            text-align: center;
+        }
+
+        .status-pending {
+            background-color: #fff0c2;
+            color: #a68b00;
+        }
+
+        .status-running {
+            background-color: #c8e6c9;
+            color: #388e3c;
+        }
+
+        .status-suspended {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
     </style>
 </head>
 
@@ -207,40 +224,56 @@ $result = $conn->query($sql);
             <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>List of Sport</h1>
+            <h1>List of Facility</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Sport ID</th>
-                    <th>Sport Name</th>
-                    <th>Total Court</th>
+                    <th>Facility ID</th>
+                    <th>Court</th>
+                    <th>Total</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
 
                 <?php
                 if ($result->num_rows > 0) {
-                    $counter = 1;
+                    $counter = 1 + $offset;
                     while ($row = $result->fetch_assoc()) {
+                        $statusClass = '';
+                        if ($row['FACSTATUS'] == 'RUNNING') {
+                            $statusClass = 'status-running';
+                        } elseif ($row['FACSTATUS'] == 'SUSPENDED') {
+                            $statusClass = 'status-suspended';
+                        } else {
+                            $statusClass = 'status-pending';
+                        }
+
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['SPORTID'] . "</td>";
-                        echo "<td>" . $row['SPORTNAME'] . "</td>";
-                        echo "<td>" . $row['total'] . "</td>";
+                        echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td>" . $row['FACNAME'] . "</td>";
+                        echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td><p class='status $statusClass'>" . $row['FACSTATUS'] . "</p></td>";
+                        // echo "<td>" . $row['PAYMENTSTATUS'] . "</td>";
+
+                        // Determine the CSS class based on the payment status
+
                 ?>
                         <td>
-                            <a href="processDeleteSport.php?deleteID=<?php echo $row['SPORTID']; ?>" class="btn btn-danger">Delete</a>
+                            <a href="processFacStatus.php?runID=<?php echo $row['FACID']; ?>" class="btn btn-primary">Run</a>
+                            <a href="processFacStatus.php?suspendID=<?php echo $row['FACID']; ?>" class="btn btn-danger">Suspend</a>
+                        </td>
                         </td>
                 <?php
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='4'>No sports found</td></tr>";
+                    echo "<tr><td colspan='9'>No payment(s) found</td></tr>";
                 }
-                $conn->close();
                 ?>
             </table>
 
@@ -252,9 +285,7 @@ $result = $conn->query($sql);
                     </li>
                     <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
                         <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>">
-                                <?php echo $i; ?>
-                            </a>
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php } ?>
                     <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
@@ -262,12 +293,7 @@ $result = $conn->query($sql);
                     </li>
                 </ul>
             </nav>
-            <div class="d-grid gap-2 d-md-block">
-                <a class="btn btn-success" type="button" href="adminAddSport.php">Add Sport</a>
-                <a class="btn btn-success" type="button" href="adminAddFac.php">Assign Facility</a>
-            </div>
         </div>
-    </div>
     </div>
 
     <script src="js/bootstrap.bundle.min.js"></script>

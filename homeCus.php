@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start(); // Start the session
+session_start();
 
-if (!isset($_SESSION['ID'])) {
-    echo "<script>Log In First</script>";
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
     header("Location: login.php");
     exit();
 }
 
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 ?>
 
 <head>
@@ -102,7 +104,7 @@ $sessionID = $_SESSION['ID'];
                 </h1>
                 <br>
                 <br>
-                <a href="checkTime.php">GET STARTED</a>
+                <a href="cusCheckTime.php">GET STARTED</a>
             </div>
 
             <div class="home-icon">

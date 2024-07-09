@@ -12,11 +12,11 @@ if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
 $sessionID = $_SESSION['ID'];
 $sessionUsername = $_SESSION['username'];
 
-require_once("config.php");
+require_once('config.php');
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Fetch all addons
+$sql = "select * FROM payment";
+$result = mysqli_query($conn, $sql);
 
 // Get the current page number from the query parameter; default to 1 if not set
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -24,27 +24,27 @@ $records_per_page = 5; // Number of records to display per page
 $offset = ($page - 1) * $records_per_page;
 
 // Fetch the total number of records
-$total_records_sql = "SELECT COUNT(*) as total FROM SPORT";
+$total_records_sql = "select COUNT(P.BOOKINGID) as total FROM BOOKING B 
+JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID
+WHERE P.PAYMENTSTATUS='PENDING'";
 $total_records_stmt = $conn->prepare($total_records_sql);
 $total_records_stmt->execute();
 $total_records_result = $total_records_stmt->get_result();
 $total_records = $total_records_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-// Query to fetch sport details with pagination
-$sql = "select SPORTID, SPORTNAME FROM SPORT LIMIT ? OFFSET ?";
+// Query to fetch bookings
+$sql = "select B.*, P.*, C.* 
+        FROM BOOKING B 
+        JOIN PAYMENT P ON B.BOOKINGID = P.BOOKINGID
+        JOIN CUSTOMER C ON B.CUSTID = C.CUSTID
+        WHERE P.PAYMENTSTATUS='PENDING'
+        ORDER BY P.PAYMENTID DESC
+        LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $records_per_page, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
-
-
-// Query to fetch sport details along with the total number of courts
-$sql = "select S.SPORTID, S.SPORTNAME, COUNT(F.FACID) AS total
-        FROM SPORT S
-        LEFT JOIN FACILITY F ON S.SPORTID = F.SPORTID
-        GROUP BY S.SPORTID, S.SPORTNAME";
-$result = $conn->query($sql);
 
 ?>
 
@@ -53,14 +53,13 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Sport</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>View Pending</title>
     <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <style>
         .container {
             background-color: #fff;
-            width: 80%;
+            width: 90%;
             margin: 20px auto;
             border-radius: 15px;
             padding: 20px;
@@ -103,7 +102,7 @@ $result = $conn->query($sql);
         }
 
         .content table {
-            width: 80%;
+            width: 90%;
             text-align: center;
             margin: 0 auto;
             padding: 10px;
@@ -207,43 +206,51 @@ $result = $conn->query($sql);
             <a href="homeAdmin.php" class="back-button">
                 <img src="resource/backButton.svg" alt="Back">
             </a>
-            <h1>List of Sport</h1>
+            <h1>Pending Payments</h1>
         </div>
 
         <div class="content">
             <table>
                 <tr class="header">
                     <th>No</th>
-                    <th>Sport ID</th>
-                    <th>Sport Name</th>
-                    <th>Total Court</th>
+                    <th>Payment ID</th>
+                    <th>Date</th>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
+                    <th>Court</th>
+                    <th>Total</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
 
                 <?php
                 if ($result->num_rows > 0) {
-                    $counter = 1;
+                    $counter = 1 + $offset;
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr class='info'>";
                         echo "<td>" . $counter . "</td>";
-                        echo "<td>" . $row['SPORTID'] . "</td>";
-                        echo "<td>" . $row['SPORTNAME'] . "</td>";
-                        echo "<td>" . $row['total'] . "</td>";
+                        echo "<td>" . $row['PAYMENTID'] . "</td>";
+                        echo "<td>" . $row['BOOKINGID'] . "</td>";
+                        echo "<td>" . $row['BOOKINGDATE'] . "</td>";
+                        echo "<td>" . $row['CUSTNAME'] . "</td>";
+                        echo "<td>" . $row['FACID'] . "</td>";
+                        echo "<td>RM" . $row['PAYMENTTOTAL'] . "</td>";
+                        echo "<td>" . $row['PAYMENTSTATUS'] . "</td>";
                 ?>
                         <td>
-                            <a href="processDeleteSport.php?deleteID=<?php echo $row['SPORTID']; ?>" class="btn btn-danger">Delete</a>
+                            <a href="processPaid.php?updateID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-primary">Accept</a>
+                            <a href="processPaid.php?cancelID=<?php echo $row['BOOKINGID']; ?>" class="btn btn-danger">Cancel</a>
+                        </td>
                         </td>
                 <?php
                         echo "</tr>";
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='4'>No sports found</td></tr>";
+                    echo "<tr><td colspan='9'>No payment(s) found</td></tr>";
                 }
-                $conn->close();
                 ?>
             </table>
-
             <!-- Pagination controls -->
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
@@ -252,9 +259,7 @@ $result = $conn->query($sql);
                     </li>
                     <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
                         <li class="page-item <?php if ($page == $i) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>">
-                                <?php echo $i; ?>
-                            </a>
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php } ?>
                     <li class="page-item <?php if ($page >= $total_pages) echo 'disabled'; ?>">
@@ -262,15 +267,9 @@ $result = $conn->query($sql);
                     </li>
                 </ul>
             </nav>
-            <div class="d-grid gap-2 d-md-block">
-                <a class="btn btn-success" type="button" href="adminAddSport.php">Add Sport</a>
-                <a class="btn btn-success" type="button" href="adminAddFac.php">Assign Facility</a>
-            </div>
         </div>
     </div>
-    </div>
-
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="function.js"></script>
 </body>
 
 </html>

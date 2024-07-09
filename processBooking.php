@@ -46,7 +46,7 @@
                 foreach ($_POST['quantity'] as $addonID => $quantity) {
                     if ($quantity > 0) {
                         // Fetch current quantity of the addon
-                        $inventoryStmt = $conn->prepare("SELECT ADDONQUANTITY FROM ADDON WHERE ADDONID = ?");
+                        $inventoryStmt = $conn->prepare("select ADDONQUANTITY FROM ADDON WHERE ADDONID = ?");
                         $inventoryStmt->bind_param("i", $addonID);
                         $inventoryStmt->execute();
                         $result = $inventoryStmt->get_result();
@@ -73,7 +73,7 @@
                                 $price = $priceRow['ADDONPRICE'];
 
                                 // Insert the addon booking details
-                                $addonStmt = $conn->prepare("INSERT INTO BOOKING_ADDON (BOOKINGID, ADDONID, PRICE, QUANTITY) VALUES (?, ?, ?, ?)");
+                                $addonStmt = $conn->prepare("insert INTO BOOKING_ADDON (BOOKINGID, ADDONID, PRICE, QUANTITY) VALUES (?, ?, ?, ?)");
                                 $addonStmt->bind_param("iidi", $booking_id, $addonID, $price, $quantity);
                                 $addonStmt->execute();
                                 $addonStmt->close();
@@ -95,7 +95,7 @@
             $payStmt->close();
 
             // Booking successfully inserted
-            echo "<script>alert('Booking successful. Your booking ID is:  . $booking_id');
+            echo "<script>alert('Booking successful. Your booking ID is: $booking_id');
         window.location.href = 'successBooking.html'; // Replace 'nextPage.php' with the desired page
         </script>";
         } else {

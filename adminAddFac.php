@@ -11,36 +11,44 @@ if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
 $sessionID = $_SESSION['ID'];
 $sessionUsername = $_SESSION['username'];
 
-
 include "config.php";
-$editID = $_GET['editID'];
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $sportid = $_POST['sportid'];
+    $facid = $_POST['facid'];
+    $facname = $_POST['facname'];
+    $fee = $_POST['fee'];
+    $status = $_POST['status'];
 
-// Fetch addon data
-$sql = "SELECT * FROM ADDON WHERE ADDONID = ?";
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("i", $editID);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Check for duplicate FACID
+    $check_sql = "SELECT FACID FROM FACILITY WHERE FACID = ?";
+    $check_stmt = $conn->prepare($check_sql);
+    $check_stmt->bind_param("s", $facid);
+    $check_stmt->execute();
+    $check_result = $check_stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $editData = $result->fetch_assoc();
+    if ($check_result->num_rows > 0) {
+        // FACID already exists
+        $error_message = "Facility ID already exists. Please use a different ID.";
     } else {
-        echo "<script>alert('No Addon Found');</script>";
-        $editData = [
-            'ADDONNAME' => '',
-            'ADDONPRICE' => '',
-            'ADDONQUANTITY' => '',
-            'ADDONID' => $editID
-        ];
-    }
-    $stmt->close();
-} else {
-    echo "<script>alert('Error preparing statement for fetching data.');</script>";
-}
+        // Insert the new facility
+        $insert_sql = "INSERT INTO FACILITY (FACID, SPORTID, FACNAME, FEE, FACSTATUS) VALUES (?, ?, ?, ?, ?)";
+        $insert_stmt = $conn->prepare($insert_sql);
+        $insert_stmt->bind_param("sssss", $facid, $sportid, $facname, $fee, $status);
 
-$conn->close();
+        if ($insert_stmt->execute()) {
+            $success_message = "Facility added successfully.";
+        } else {
+            $error_message = "Error adding facility: " . $conn->error;
+        }
+
+        $insert_stmt->close();
+    }
+
+    $check_stmt->close();
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -49,7 +57,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Add Facility</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -166,7 +174,7 @@ $conn->close();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="homeCus.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -176,10 +184,13 @@ $conn->close();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -192,26 +203,55 @@ $conn->close();
 
     <div class="check-container">
         <div class="title">
-            <h1>Edit Addon</h1>
+            <h1>Add Facility</h1>
         </div>
 
         <div class="check-wrapper">
-            <form class="row g-3" action="updateAddon.php" method="POST">
-                <div class="col-md-4 input-box">
-                    <input type="hidden" class="form-control" id="id" name="id" value="<?php echo $editID; ?>">
-                    <label for="name">Addon Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($editData['ADDONNAME']); ?>" required>
+            <?php if (isset($error_message)) : ?>
+                <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <?php endif; ?>
+            <?php if (isset($success_message)) : ?>
+                <div class="alert alert-success"><?php echo $success_message; ?></div>
+            <?php endif; ?>
+            <form class="row g-3" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                <div class="col-md-12 input-box">
+                    <label for="sportid">Sport</label>
+                    <select id="sportid" name="sportid" class="form-control" required>
+                        <option>Select an option</option>
+                        <?php
+                        $sql = "select SPORTID, SPORTNAME FROM SPORT";
+                        $result = $conn->query($sql);
+
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row['SPORTID'] . "'>" . $row['SPORTNAME'] . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No options available</option>";
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
                 </div>
-                <div class="col-md-4 input-box">
-                    <label for="price">Price</label>
-                    <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($editData['ADDONPRICE']); ?>" required>
+                <div class="col-md-6 input-box">
+                    <label for="facid">Facility ID</label>
+                    <input type="text" class="form-control" id="facid" name="facid" required>
                 </div>
-                <div class="col-md-4 input-box">
-                    <label for="quantity">Quantity</label>
-                    <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo htmlspecialchars($editData['ADDONQUANTITY']); ?>" required>
+                <div class="col-md-6 input-box">
+                    <label for="facname">Facility Name</label>
+                    <input type="text" class="form-control" id="facname" name="facname" required>
+                </div>
+                <div class="col-md-6 input-box">
+                    <label for="fee">Fee per Hour</label>
+                    <input type="text" class="form-control" id="fee" name="fee" required>
+                </div>
+                <div class="col-md-6 input-box">
+                    <label for="status">Facility Status</label>
+                    <input type="text" class="form-control" id="status" name="status" placeholder="RUNNING, SUSPENDED..." required>
                 </div>
                 <div class="action-buttons">
-                    <button type="submit" class="submit-button" name="updateProfile">Update Addon</button>
+                    <button type="submit" class="submit-button">Submit</button>
                 </div>
             </form>
         </div>

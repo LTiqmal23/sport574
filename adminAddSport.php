@@ -11,36 +11,34 @@ if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
 $sessionID = $_SESSION['ID'];
 $sessionUsername = $_SESSION['username'];
 
-
 include "config.php";
-$editID = $_GET['editID'];
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $sportName = trim($_POST['name']);
 
-// Fetch addon data
-$sql = "SELECT * FROM ADDON WHERE ADDONID = ?";
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("i", $editID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $editData = $result->fetch_assoc();
+    // Validate input
+    if (empty($sportName)) {
+        echo "<script>alert('All fields are required');</script>";
     } else {
-        echo "<script>alert('No Addon Found');</script>";
-        $editData = [
-            'ADDONNAME' => '',
-            'ADDONPRICE' => '',
-            'ADDONQUANTITY' => '',
-            'ADDONID' => $editID
-        ];
+        // Prepare and execute the insert statement
+        $stmt = $conn->prepare("insert INTO SPORT (SPORTNAME) VALUES (?)");
+        if ($stmt) {
+            $stmt->bind_param('s', $sportName);
+            if ($stmt->execute()) {
+                echo "<script>alert('New sport added.');
+                      window.location.href = 'adminViewSport.php';S</script>";
+            } else {
+                echo "<script>alert('Error adding new sport');</script>";
+            }
+            $stmt->close();
+        } else {
+            echo "<script>alert('Error preparing statement');</script>";
+        }
     }
-    $stmt->close();
-} else {
-    echo "<script>alert('Error preparing statement for fetching data.');</script>";
 }
-
 $conn->close();
 ?>
+
 
 
 <!DOCTYPE html>
@@ -49,7 +47,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Add Sport</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -166,7 +164,7 @@ $conn->close();
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="homeCus.php">
+                <a class="navbar-brand" href="homeAdmin.php">
                     <img src="resource/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                     SPORTFUSION
                 </a>
@@ -176,10 +174,13 @@ $conn->close();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="cusCheckTime.php">Book</a>
+                            <a class="nav-link" href="adminViewAddon.php">Addon</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="profile.php">Profile</a>
+                            <a class="nav-link" href="adminViewBooking.php">Booking</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="adminViewSport.php">Sport</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
@@ -192,26 +193,17 @@ $conn->close();
 
     <div class="check-container">
         <div class="title">
-            <h1>Edit Addon</h1>
+            <h1>Add Sport</h1>
         </div>
 
         <div class="check-wrapper">
-            <form class="row g-3" action="updateAddon.php" method="POST">
-                <div class="col-md-4 input-box">
-                    <input type="hidden" class="form-control" id="id" name="id" value="<?php echo $editID; ?>">
-                    <label for="name">Addon Name</label>
-                    <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($editData['ADDONNAME']); ?>" required>
-                </div>
-                <div class="col-md-4 input-box">
-                    <label for="price">Price</label>
-                    <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo htmlspecialchars($editData['ADDONPRICE']); ?>" required>
-                </div>
-                <div class="col-md-4 input-box">
-                    <label for="quantity">Quantity</label>
-                    <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo htmlspecialchars($editData['ADDONQUANTITY']); ?>" required>
+            <form class="row g-3" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                <div class="col-md-12 input-box">
+                    <label for="name">Sport Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
                 </div>
                 <div class="action-buttons">
-                    <button type="submit" class="submit-button" name="updateProfile">Update Addon</button>
+                    <button type="submit" class="submit-button">Submit</button>
                 </div>
             </form>
         </div>

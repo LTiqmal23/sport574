@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start(); // Start the session
+session_start();
 
-if (!isset($_SESSION['ID'])) {
-    echo "<script>Log In First</script>";
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
     header("Location: login.php");
     exit();
 }
 
 $sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
 
 include "config.php";
+
 // pending payment
 $sqlGetPending = $conn->prepare("select COUNT(PAYMENTID) as totalPending from payment where PAYMENTSTATUS='PENDING'");
 $sqlGetPending->execute();
@@ -27,17 +30,10 @@ $sqlGetCust = $conn->prepare("select COUNT(CUSTID) as totalCust from CUSTOMER");
 $sqlGetCust->execute();
 $resGetCust = $sqlGetCust->get_result();
 
-// Total running court
-$sqlRunning = $conn->prepare("SELECT COUNT(FACID) as running FROM FACILITY WHERE FACSTATUS='RUNNING'");
-$sqlRunning->execute();
-$resRunning = $sqlRunning->get_result();
-
-// Total all court
-$sqlTotalCourt = $conn->prepare("SELECT COUNT(FACID) as totalCourt FROM FACILITY");
-$sqlTotalCourt->execute();
-$resTotalCourt = $sqlTotalCourt->get_result();
-
-$totalCourt = 0;
+// total suspended court
+$sqlSuspended = $conn->prepare("select COUNT(FACID) as suspended from FACILITY WHERE FACSTATUS='SUSPENDED'");
+$sqlSuspended->execute();
+$resSuspended = $sqlSuspended->get_result();
 
 /*
 *
@@ -203,7 +199,7 @@ $cancelledTotalsJson = json_encode($cancelledTotals);
                                 echo "<h1>No pending payment found</h1>";
                             }
                             ?>
-                            <a href="adminPendingPayment.php" class="card-link btn btn-dark">View</a>
+                            <a href="#" class="card-link btn btn-dark">View</a>
                     </div>
                 </div>
                 <div class="card" style="width: 18rem;">
@@ -218,7 +214,7 @@ $cancelledTotalsJson = json_encode($cancelledTotals);
                             echo "<h1>No pending payment found</h1>";
                         }
                         ?>
-                        <a href="adminViewPayment.php" class="card-link btn btn-dark">View</a>
+                        <a href="#" class="card-link btn btn-dark">View</a>
                     </div>
                 </div>
                 <div class="card" style="width: 18rem;">
@@ -238,23 +234,17 @@ $cancelledTotalsJson = json_encode($cancelledTotals);
                 </div>
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h3 class="card-title">ACTIVE COURT</h3>
+                        <h3 class="card-title">SUSPENDED COURT</h3>
                         <?php
-                        if ($resTotalCourt->num_rows > 0) {
-                            while ($row = $resTotalCourt->fetch_assoc()) {
-                                $totalCourt = $row['totalCourt']; // Assign the value to $totalCourt
-                            }
-                        }
-
-                        if ($resRunning->num_rows > 0) {
-                            while ($row = $resRunning->fetch_assoc()) {
-                                echo "<h1>" . $row['running'] . "/" . $totalCourt . "</h1>";
+                        if ($resSuspended->num_rows > 0) {
+                            while ($row = $resSuspended->fetch_assoc()) {
+                                echo "<h1>" . $row['suspended'] . "</h1>";
                             }
                         } else {
                             echo "<h1>No customer registered</h1>";
                         }
                         ?>
-                        <a href="adminEditFac.php" class="card-link btn btn-dark">View</a>
+                        <a href="#" class="card-link btn btn-dark">View</a>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <?php
 session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['ID']) || !isset($_SESSION['username'])) {
+    echo "<script>alert('Log In First');</script>";
+    header("Location: login.php");
+    exit();
+}
+
+$sessionID = $_SESSION['ID'];
+$sessionUsername = $_SESSION['username'];
+
 require_once('config.php');
 
 // Handle update of existing addons
@@ -265,8 +276,6 @@ $result = $stmt->get_result();
                         <td>
                             <a href="adminEditAddon.php?editID=<?php echo $row['ADDONID']; ?>" class="btn btn-primary">Edit</a>
                             <a href="processDeleteAddon.php?deleteID=<?php echo $row['ADDONID']; ?>" class="btn btn-danger">Delete</a>
-                        </td>
-
                         </td>
                 <?php
                         echo "</tr>";
