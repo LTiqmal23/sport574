@@ -297,7 +297,7 @@ $viewID = $_GET["viewID"];
                             $bookingCustPhone = $row["CUSTPHONE"];
                             $bookingCustName = $row["CUSTNAME"];
                         } else {
-                            echo "<script>alert('No Booking Available');</script>";
+                            echo "<script>alert('No Addon is choosed from this booking.');</script>";
                         }
 
                         // Close the prepared statement
@@ -339,11 +339,11 @@ $viewID = $_GET["viewID"];
 
                         <div class="table-container2">
                             <?php
-                            $sqlPayment = "select B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
+                            $sqlPayment = "SELECT B.*, F.FACPRICEPERHOUR, A.ADDONID, A.QUANTITY, A.PRICE, AD.ADDONNAME 
                             FROM booking B 
-                            JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
                             JOIN FACILITY F ON B.FACID = F.FACID 
-                            JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
+                            LEFT JOIN booking_addon A ON B.BOOKINGID = A.BOOKINGID
+                            LEFT JOIN ADDON AD ON A.ADDONID = AD.ADDONID 
                             WHERE B.BOOKINGID = ?";
                             $stmtPayment = $conn->prepare($sqlPayment);
 
