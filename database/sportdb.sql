@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 08, 2024 at 02:50 PM
+-- Generation Time: Jul 09, 2024 at 01:30 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -40,9 +40,9 @@ CREATE TABLE `addon` (
 
 INSERT INTO `addon` (`ADDONID`, `ADDONNAME`, `ADDONPRICE`, `ADDONQUANTITY`) VALUES
 (301, '100 PLUS', 3.00, 400),
-(302, 'EXTRAJOSS', 2.00, 500),
-(303, 'ENERGY GEl', 5.00, 600),
-(304, 'MINERAL WATER', 1.00, 294);
+(302, 'EXTRAJOSS', 2.00, 494),
+(303, 'ENERGY GEl', 5.00, 590),
+(304, 'MINERAL WATER', 1.00, 350);
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,10 @@ INSERT INTO `booking` (`BOOKINGID`, `BOOKINGDATE`, `TIMESLOT`, `HOURSBOOKED`, `A
 (100120, '2024-05-15', '1600H-1700H', '1', 20241, 'F2', 101),
 (100121, '2024-03-18', '1000H-1100H', '1', 20241, 'F2', 101),
 (100122, '2024-07-11', '1600H-1700H', '1', 20241, 'P2', 102),
-(100123, '2024-06-19', '1800H-1900H', '1', 20241, 'P1', 102);
+(100123, '2024-06-19', '1800H-1900H', '1', 20241, 'P1', 102),
+(100124, '2024-06-06', '1600H-1700H', '1', 20241, 'P2', 101),
+(100125, '2024-06-07', '1500H-1600H', '1', 20241, 'F2', 102),
+(100126, '2024-07-20', '1400H-1500H', '1', 20241, 'F2', 102);
 
 -- --------------------------------------------------------
 
@@ -188,7 +191,11 @@ INSERT INTO `booking_addon` (`BOOKINGID`, `ADDONID`, `PRICE`, `QUANTITY`) VALUES
 (100122, 303, 5.00, 3),
 (100122, 304, 1.00, 6),
 (100123, 301, 3.00, 40),
-(100123, 302, 2.00, 30);
+(100123, 302, 2.00, 30),
+(100124, 303, 5.00, 2),
+(100124, 304, 1.00, 2),
+(100125, 303, 5.00, 8),
+(100126, 302, 2.00, 6);
 
 -- --------------------------------------------------------
 
@@ -211,7 +218,7 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`CUSTID`, `CUSTNAME`, `CUSTADDRESS`, `CUSTPHONE`, `USERNAME`, `PASSWORD`) VALUES
 (101, 'IQMAL', 'UITMKT, 21080 KUALA TERENGGANU, TERENGGANU', '0134567373', 'iqmal', 'kemah01'),
-(102, 'NajibRazak', 'UiTMKT', '01183822959', 'Bossku', '123');
+(102, 'Najib1MDB', 'UiTMKT', '01183822959', 'Bossku', '123');
 
 -- --------------------------------------------------------
 
@@ -282,7 +289,10 @@ INSERT INTO `payment` (`PAYMENTID`, `PAYMENTTOTAL`, `PAYMENTSTATUS`, `PAYMENTDAT
 (300318, 132.00, 'CANCELLED', '2024-05-15', 100120),
 (300319, 110.00, 'PAID', '2024-03-18', 100121),
 (300320, 341.00, 'PAID', '2024-07-11', 100122),
-(300321, 190.00, 'PAID', '2024-06-19', 100123);
+(300321, 190.00, 'PAID', '2024-06-19', 100123),
+(300322, 22.00, 'PENDING', '2024-06-06', 100124),
+(300323, 140.00, 'PENDING', '2024-06-07', 100125),
+(300324, 112.00, 'PENDING', '2024-07-20', 100126);
 
 -- --------------------------------------------------------
 
@@ -371,13 +381,13 @@ ALTER TABLE `sport`
 -- AUTO_INCREMENT for table `addon`
 --
 ALTER TABLE `addon`
-  MODIFY `ADDONID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=306;
+  MODIFY `ADDONID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=309;
 
 --
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `BOOKINGID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100124;
+  MODIFY `BOOKINGID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100127;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -389,13 +399,13 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `PAYMENTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300322;
+  MODIFY `PAYMENTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300325;
 
 --
 -- AUTO_INCREMENT for table `sport`
 --
 ALTER TABLE `sport`
-  MODIFY `SPORTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=506;
+  MODIFY `SPORTID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=507;
 
 --
 -- Constraints for dumped tables
