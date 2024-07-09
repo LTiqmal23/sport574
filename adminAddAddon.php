@@ -191,7 +191,7 @@ $conn->close();
 
     <div class="check-container">
         <div class="title">
-            <h1>Edit Addon</h1>
+            <h1>Add New Addon</h1>
         </div>
 
         <div class="check-wrapper">
