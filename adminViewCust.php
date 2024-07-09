@@ -256,10 +256,6 @@ $result = $stmt->get_result();
                     </li>
                 </ul>
             </nav>
-
-            <div class="d-grid gap-2 d-md-block">
-                <a class="btn btn-success" type="button" href="adminAddCust.php">Add Customer</a>
-            </div>
         </div>
     </div>
 

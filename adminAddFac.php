@@ -32,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Facility ID already exists. Please use a different ID.";
     } else {
         // Insert the new facility
-        $insert_sql = "INSERT INTO FACILITY (FACID, SPORTID, FACNAME, FEE, FACSTATUS) VALUES (?, ?, ?, ?, ?)";
+        $insert_sql = "INSERT INTO FACILITY (FACID, SPORTID, FACNAME, FACPRICEPERHOUR, FACSTATUS) VALUES (?, ?, ?, ?, ?)";
         $insert_stmt = $conn->prepare($insert_sql);
-        $insert_stmt->bind_param("sssss", $facid, $sportid, $facname, $fee, $status);
+        $insert_stmt->bind_param("sisds", $facid, $sportid, $facname, $fee, $status);
 
         if ($insert_stmt->execute()) {
             $success_message = "Facility added successfully.";

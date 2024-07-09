@@ -232,8 +232,7 @@ $result = $stmt->get_result();
                 <tr class="header">
                     <th>No</th>
                     <th>Facility ID</th>
-                    <th>Court</th>
-                    <th>Total</th>
+                    <th>Name</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -255,7 +254,6 @@ $result = $stmt->get_result();
                         echo "<td>" . $counter . "</td>";
                         echo "<td>" . $row['FACID'] . "</td>";
                         echo "<td>" . $row['FACNAME'] . "</td>";
-                        echo "<td>" . $row['FACID'] . "</td>";
                         echo "<td><p class='status $statusClass'>" . $row['FACSTATUS'] . "</p></td>";
                         // echo "<td>" . $row['PAYMENTSTATUS'] . "</td>";
 
@@ -272,7 +270,7 @@ $result = $stmt->get_result();
                         $counter++;
                     }
                 } else {
-                    echo "<tr><td colspan='9'>No payment(s) found</td></tr>";
+                    echo "<tr><td colspan='9'>No court(s) found</td></tr>";
                 }
                 ?>
             </table>
